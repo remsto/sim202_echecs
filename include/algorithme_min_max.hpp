@@ -5,8 +5,14 @@
 
 class Position 
 {
-    int valeur ();
+public:
 
+    int valeurPosition();
+    Position* soeur;
+    Position* fille;
+    int n;
+    bool joueur;
+    void generateur(int profondeur);
 };
 
 class Plateau {
