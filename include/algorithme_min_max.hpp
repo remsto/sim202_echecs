@@ -9,4 +9,16 @@ class Position
 
 };
 
+class plateau {
+
+};
+
+class TypePiece{
+
+};
+
+class Piece{
+
+};
+
 #endif
