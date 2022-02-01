@@ -28,7 +28,7 @@ class Echiquier
 {public :
     int taille; // 3 ou 8
     Piece** plateau; 
-    void affiche() const;
+    void affiche() const; 
 };
 
 

@@ -26,8 +26,13 @@ TypePiece::TypePiece(string type)
 
 void Echiquier::affiche () const 
 {
+    cout << "  A  B  C\n"
     for (int i=1; i<=taille*taille; i++) {
         Piece* piece=plateau[i];
+        if (i%taille==0) {
+            cout <<i/taille << " "; 
+        }
+            cout<<"\n";
         if (piece==0) { 
             cout<<"  ";
         } else {
