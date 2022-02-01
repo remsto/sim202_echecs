@@ -6,11 +6,11 @@
 class Position 
 {
 public:
-
+    Plateau plateauRef; // classe Plateau à implémenter
+    Coup* coupsPrecedents; // classe Coup à implémenter
     int valeurPosition();
     Position* soeur;
     Position* fille;
-    int n;
     bool joueur;
     void generateur(int profondeur);
 };

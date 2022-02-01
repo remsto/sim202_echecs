@@ -17,7 +17,7 @@ class TypePiece : public Piece
     bool isWhite; //white=rond
     
 
-}
+};
 
 
 
