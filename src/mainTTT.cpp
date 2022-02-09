@@ -30,12 +30,12 @@ int main()
             cout << "Voici le plateau : \n";
             EchiTTT.affiche3();
             cout << "où jouer ? \n";
-            cout << "Entrez la ligne :";
+
+                        cout << "Entrez la ligne :";
             cin >> ligne;
             // vérifier conformité de l'entrée
             cout << "Entrez la colonne :";
             cin >> colonne;
-
             // vérifier conformité de l'entrée
 
             pair<int, int> p(ligne, colonne);
