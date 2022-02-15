@@ -10,7 +10,6 @@ Position::Position(Echiquier &plateau, ListeCoups &coups, Position *positionSoeu
     soeur = positionSoeur;
     fille = positionFille;
     coupsPrecedents = coups;
-    valeurPosition = valeurPosition(); // à réfléchir
 }
 
 Position::~Position()
@@ -18,44 +17,54 @@ Position::~Position()
     delete[] coupsPrecedents;
 }
 
-void Position::generateur(int profondeur){
-    Piece** plateau = plateauRef->plateau;
-    actualisePlateau(plateau, coupsPrecedents); 
+void Position::generateur(int profondeur)
+{
+    Piece **plateau = plateauRef->plateau;
+    actualisePlateau(plateau, coupsPrecedents);
     ListeCoups coupsPossibles = coupsPossibles(); // a coder
     resetPlateau(plateau);
 
     annexe(profondeur, coupsPossibles) // a coder
-    //for (int i = 0; i<coupsPossibles.nbCoups;i++){
-    //    Coup* coup = coupsPrecedents.last;
-    //    coup->next =   
-    //    Position(plateau, coupsPrecedents, Position* positionSoeur, Position* positionFille, bool joueurCoup)
-    //}
-    
+    // for (int i = 0; i<coupsPossibles.nbCoups;i++){
+    //     Coup* coup = coupsPrecedents.last;
+    //     coup->next =
+    //     Position(plateau, coupsPrecedents, Position* positionSoeur, Position* positionFille, bool joueurCoup)
+    // }
 }
 
-void annexe(int profondeur, ListeCoups coupsPossibles){
-    if((profondeur!=0)){
-        if(coupsPossibles.first!=coupsPossibles.last){
+void annexe(int profondeur, ListeCoups coupsPossibles)
+{
+    if ((profondeur != 0))
+    {
+        if (coupsPossibles.first != coupsPossibles.last)
+        {
             // créer soeur, appeler annexe dessus
         }
         // créer fille, appeler annexe dessus (profondeur -1)
     }
 }
 
-void addCoup(ListeCoups & L, const Coup & C){
-    Coup * K = new Coup(C);
+void addCoup(ListeCoups &L, const Coup &C)
+{
+    Coup *K = new Coup(C);
     K->next = NULL;
-    if (L.nbCoups == 0) L.first = K;
-    else L.last->next = K;
+    if (L.nbCoups == 0)
+        L.first = K;
+    else
+        L.last->next = K;
     L.last = K;
     L.nbCoups++;
 }
 
-ListeCoups coupsPossibles(Echiquier plateau){
-    
-    for(i=1;i<=3;i++){
-        for(j=1;j<=3;j++){
-            if(plateauRef){
+ListeCoups coupsPossibles(Echiquier plateau)
+{
+
+    for (i = 1; i <= 3; i++)
+    {
+        for (j = 1; j <= 3; j++)
+        {
+            if (plateauRef)
+            {
             }
         }
     }
