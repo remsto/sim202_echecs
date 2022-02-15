@@ -25,7 +25,7 @@ void Position::generateur(int profondeur){
 
     annexe(profondeur, coupsPossibles) // a coder
     //for (int i = 0; i<coupsPossibles.nbCoups;i++){
-     //   Coup* coup = coupsPrecedents.last;
+    //    Coup* coup = coupsPrecedents.last;
     //    coup->next =   
     //    Position(plateau, coupsPrecedents, Position* positionSoeur, Position* positionFille, bool joueurCoup)
     //}
@@ -55,7 +55,6 @@ ListeCoups coupsPossibles(Echiquier plateau){
     for(i=1;i<=3;i++){
         for(j=1;j<=3;j++){
             if(plateauRef){
-                créer fille
             }
         }
     }
@@ -118,7 +117,7 @@ bool Position::estGagnante(){
     
 }
 
-Void actualisePlateau(Echiquier plateau, ListeCoups coupsPrecedents){
+void actualisePlateau(Echiquier plateau, ListeCoups coupsPrecedents){
     Coup* dernierCoup = coupsPrecedents->last;
     Coup* premierCoup = coupsPrecedents->first;
     Coup* coup = premierCoup;
