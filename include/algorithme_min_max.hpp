@@ -15,7 +15,7 @@ public:
     bool joueur;
 
     bool estGagnante();
-    int valeurPosition();
+    int calculeValeurPosition();
     void generateur(int profondeur);
     ~Position();
 };

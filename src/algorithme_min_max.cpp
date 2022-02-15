@@ -20,24 +20,27 @@ Position::~Position()
 
 void Position::generateur(int profondeur){
     Piece** plateau = plateauRef->plateau;
-    actualisePlateau(plateau, coupsPrecedents); 
-    ListeCoups coupsPossibles = coupsPossibles(); // a coder
-    resetPlateau(plateau);
+    if(!this.estGagnante()){
+        // actualisePlateau(plateau, coupsPrecedents); 
+        ListeCoups coupsPossibles = coupsPossibles(); // a coder
+        // resetPlateau(plateau);
 
-    annexe(profondeur, coupsPossibles) // a coder
-    //for (int i = 0; i<coupsPossibles.nbCoups;i++){
-    //    Coup* coup = coupsPrecedents.last;
-    //    coup->next =   
-    //    Position(plateau, coupsPrecedents, Position* positionSoeur, Position* positionFille, bool joueurCoup)
-    //}
-    
+        annexe(profondeur, coupsPossibles, this) // a coder
+        //for (int i = 0; i<coupsPossibles.nbCoups;i++){
+        //    Coup* coup = coupsPrecedents.last;
+        //    coup->next =   
+        //    Position(plateau, coupsPrecedents, Position* positionSoeur, Position* positionFille, bool joueurCoup)
+        //}
+    }
 }
 
-void annexe(int profondeur, ListeCoups coupsPossibles){
-    if((profondeur!=0)){
-        if(coupsPossibles.first!=coupsPossibles.last){
-            // créer soeur, appeler annexe dessus
-        }
+void annexe(int profondeur, ListeCoups coupsPossibles, Position pos){
+    if(coupsPossibles.first!=coupsPossibles.last){
+        Position soeur = Position(plateauRef, coupsPossibles.first, Null, Null, !joueurCoup);
+        
+        // créer soeur, appeler annexe dessus (listeCoups actualisé)
+    }
+    if((profondeur!=0) || (!pos.estGagnante()) ){ // wow
         // créer fille, appeler annexe dessus (profondeur -1)
     }
 }
@@ -52,16 +55,11 @@ void addCoup(ListeCoups & L, const Coup & C){
 }
 
 ListeCoups coupsPossibles(Echiquier plateau){
-    
-    for(i=1;i<=3;i++){
-        for(j=1;j<=3;j++){
-            if(plateauRef){
-            }
-        }
-    }
+    // Pour chaque pièce:
+        // .
 }
 
-int Position::valeurPosition()
+int Position::calculeValeurPosition()
 {
     if estGagnante ()
     {
@@ -131,7 +129,7 @@ bool Position::estGagnante()
     resetPlateau(plateau, coupsPrecedents);
 }
 
-Void actualisePlateau(Echiquier plateau, ListeCoups coupsPrecedents)
+void actualisePlateau(Echiquier plateau, ListeCoups coupsPrecedents)
 {
     Coup *dernierCoup = coupsPrecedents->last;
     Coup *premierCoup = coupsPrecedents->first;
