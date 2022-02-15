@@ -47,17 +47,17 @@ Echiquier::~Echiquier()
 
 void Echiquier::affiche3() const
 {
-    cout << "  A  B  C\n";
     for (int i = 0; i < taille * taille; i++)
     {
         Piece *piece = plateau[i];
         if (i % taille == 0)
         {
-            cout << i / taille + 1 << " ";
+            cout << "---------------\n";
+            cout << taille - (i / taille) << " |";
         }
         if (piece == NULL)
         {
-            cout << "   ";
+            cout << "   |";
         }
         else
         {
@@ -70,12 +70,14 @@ void Echiquier::affiche3() const
             {
                 cout << "n";
             }
-            cout << " ";
+            cout << " |";
         }
         // ajout des retours à la ligne
         if (i % taille == taille - 1)
             cout << "\n";
     }
+    cout << "   ------------\n";
+    cout << "  | A | B | C |\n";
 }
 
 /*
