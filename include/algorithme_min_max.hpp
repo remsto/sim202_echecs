@@ -7,9 +7,9 @@ class Position
 {
 public:
     Position(Echiquier &plateau, ListeCoups &coups, Position *positionSoeur, Position *positionFille, bool joueurCoup);
-    Echiquier plateauRef;        // classe Plateau à implémenter
-    ListeCoups *coupsPrecedents; // classe Coup à implémenter
-    int valeurPosition = 0;      // attribut, à iniialiser avec valeurPosition()
+    Echiquier plateauRef;       // classe Plateau à implémenter
+    ListeCoups coupsPrecedents; // classe Coup à implémenter
+    int valeurPosition = 0;     // attribut, à iniialiser avec valeurPosition()
     Position *soeur;
     Position *fille;
     bool joueur;

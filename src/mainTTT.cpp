@@ -12,6 +12,7 @@ int main()
     int n = 0;
     int boucle_max = 1000;
     int ligne, colonne; // pour entrer où jouer
+    bool is_coups_correct;
 
     // Tirez au sort celui qui commence
     cout << "Bienvenue, tout d'abord tirons au sort qui sera le premier à jouer : \n";
@@ -29,9 +30,13 @@ int main()
         {
             cout << "Voici le plateau : \n";
             EchiTTT.affiche3();
+            is_coups_correct = false;
             cout << "où jouer ? \n";
 
-                        cout << "Entrez la ligne :";
+            while
+                is_co
+                        cout
+                    << "Entrez la ligne :";
             cin >> ligne;
             // vérifier conformité de l'entrée
             cout << "Entrez la colonne :";
