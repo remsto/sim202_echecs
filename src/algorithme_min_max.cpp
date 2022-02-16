@@ -19,27 +19,54 @@ Position::~Position()
 
 void Position::generateur(int profondeur)
 {
-    Piece **plateau = plateauRef->plateau;
-    actualisePlateau(plateau, coupsPrecedents);
-    ListeCoups coupsPossibles = coupsPossibles(); // a coder
-    resetPlateau(plateau);
+    if(profondeur!=0){
+        Piece **plateau = plateauRef->plateau;
+        actualisePlateau(plateau, coupsPrecedents);
+        ListeCoups coupsPossibles = coupsPossibles(); // regrouper avec valeur dans une méthode?
+        resetPlateau(plateau);
 
-    annexe(profondeur, coupsPossibles) // a coder
-    // for (int i = 0; i<coupsPossibles.nbCoups;i++){
-    //     Coup* coup = coupsPrecedents.last;
-    //     coup->next =
-    //     Position(plateau, coupsPrecedents, Position* positionSoeur, Position* positionFille, bool joueurCoup)
-    // }
+        // CREATION 1ere FILLE
+        ListeCoups coupsPrecedentsPrec(coupsPrecedents);
+        // cpp.last.next = dernier coup = b
+        (coupsPrecedentsPrec.last).Next = coupsPossibles.first;
+        //cpp.last = b
+        coupsPrecedentsPrec.last = (coupsPrecedentsPrec.last).Next;
+        coupsPrecedentsPrec.nbCoups ++;
+
+        Position posPrec = Position(plateauRef, coupsPrecedentsPrec, &posPrec, this, !joueur);
+
+        for (int i = 0; i<coupsPossibles.nbCoups;i++){
+            // CREATION SOEUR
+
+            // maj coupsPossibles
+            coupsPossibles.first = (coupsPossibles.first).Next
+            coupsPossibles.nbCoups = coupsPossibles.nbCoups-1 
+            
+            // cps = this.cp
+            ListeCoups coupsPrecedentsSoeur(coupsPrecedents);
+            // cps.last.next = dernier coup = b
+            (coupsPrecedentsSoeur.last).Next = coupsPossibles.first;
+            //cps.last = b
+            coupsPrecedentsSoeur.last = (coupsPrecedentsSoeur.last).Next;
+            coupsPrecedentsSoeur.nbCoups ++;
+
+            this->soeur=new Position(plateauRef, coupsPrecedentsSoeur, &posPrec, this, !joueur);
+            // appeler récursion sur soeur
+            soeur.generateur(profondeur-1);
+            
+            posPrec(soeur);
+        }
+    }
 }
 
-void annexe(int profondeur, ListeCoups coupsPossibles)
+void annexe(int profondeur, ListeCoups coupsPossibles, Position pos)
 {
+    if (coupsPossibles.first != coupsPossibles.last)
+        {
+            
+        }
     if ((profondeur != 0))
     {
-        if (coupsPossibles.first != coupsPossibles.last)
-        {
-            // créer soeur, appeler annexe dessus
-        }
         // créer fille, appeler annexe dessus (profondeur -1)
     }
 }
