@@ -22,7 +22,7 @@ class Piece : public TypePiece
 public:
     bool isWhite; // white=rond
     pair<int, int> position_coor;
-    Piece(bool isWhit, pair<int, int> coor, string type = "Pion");
+    Piece(bool isWhit = true, pair<int, int> coor = pair<int, int>(0, 0), string type = "Pion");
 };
 
 class Echiquier
@@ -30,7 +30,7 @@ class Echiquier
 public:
     int taille; // 3 ou 8
     Piece **plateau;
-    Echiquier(int n);
+    Echiquier(int n = 8);
     ~Echiquier();
     void affiche3() const;
 };

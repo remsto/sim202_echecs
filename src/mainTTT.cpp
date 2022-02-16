@@ -2,7 +2,7 @@
 using namespace std;
 #include "environnement.hpp"
 
-int main()
+int main2()
 {
 
     int taille = 3;
@@ -11,7 +11,9 @@ int main()
     Echiquier EchiTTT(taille);
     int n = 0;
     int boucle_max = 1000;
-    int ligne, colonne; // pour entrer où jouer
+    int ligne;
+    char colonne_char;
+    int colonne; // pour entrer où jouer
     bool is_coups_correct;
 
     // Tirez au sort celui qui commence
@@ -33,15 +35,29 @@ int main()
             is_coups_correct = false;
             cout << "où jouer ? \n";
 
-            while
-                is_co
-                        cout
-                    << "Entrez la ligne :";
-            cin >> ligne;
-            // vérifier conformité de l'entrée
-            cout << "Entrez la colonne :";
-            cin >> colonne;
-            // vérifier conformité de l'entrée
+            while (!is_coups_correct)
+            {
+                cout << "Entrez la ligne :";
+                cin >> ligne;
+
+                cout << "Entrez la colonne :";
+                cin >> colonne_char; // conversion
+                colonne = colonne_char - 64;
+
+                // verifiez conformité
+                if (ligne > taille || ligne < 0)
+                {
+                    cout << "la ligne ne convient pas recommencez";
+                }
+                else if (colonne > taille || colonne < 0)
+                {
+                    cout << "la colonne ne convient pas recommencez";
+                }
+                else
+                {
+                    is_coups_correct = true;
+                }
+            }
 
             pair<int, int> p(ligne, colonne);
 

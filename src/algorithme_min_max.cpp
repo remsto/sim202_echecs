@@ -3,6 +3,10 @@ using namespace std;
 #include "algorithme_min_max.hpp"
 #include "environnement.hpp"
 
+////
+// POSITION
+////
+
 Position::Position(Echiquier &plateau, ListeCoups &coups, Position *positionSoeur, Position *positionFille, bool joueurCoup)
 {
     plateauRef = plateau;
@@ -12,19 +16,24 @@ Position::Position(Echiquier &plateau, ListeCoups &coups, Position *positionSoeu
     coupsPrecedents = coups;
 }
 
-Position::~Position()
+Position::~Position() // a faire
 {
-    delete[] coupsPrecedents;
+    if (this != NULL)
+    {
+        coupsPrecedents.~ListeCoups();
+        soeur->~Position();
+        fille->~Position();
+    }
 }
 
 void Position::generateur(int profondeur)
 {
-    Piece **plateau = plateauRef->plateau;
+    Echiquier plateau = plateauRef;
     actualisePlateau(plateau, coupsPrecedents);
-    ListeCoups coupsPossibles = coupsPossibles(); // a coder
+    ListeCoups coupsPossibles = coupsPossibles(plateau); // a coder
     resetPlateau(plateau);
 
-    annexe(profondeur, coupsPossibles) // a coder
+    annexe(profondeur, coupsPossibles); // a coder
     // for (int i = 0; i<coupsPossibles.nbCoups;i++){
     //     Coup* coup = coupsPrecedents.last;
     //     coup->next =
@@ -44,32 +53,6 @@ void annexe(int profondeur, ListeCoups coupsPossibles)
     }
 }
 
-void addCoup(ListeCoups &L, const Coup &C)
-{
-    Coup *K = new Coup(C);
-    K->next = NULL;
-    if (L.nbCoups == 0)
-        L.first = K;
-    else
-        L.last->next = K;
-    L.last = K;
-    L.nbCoups++;
-}
-
-ListeCoups coupsPossibles(Echiquier plateau)
-{
-
-    for (i = 1; i <= 3; i++)
-    {
-        for (j = 1; j <= 3; j++)
-        {
-            if (plateauRef)
-            {
-            }
-        }
-    }
-}
-
 int Position::calculeValeurPosition()
 {
     if estGagnante ()
@@ -81,7 +64,7 @@ int Position::calculeValeurPosition()
 
 bool Position::estGagnante()
 {
-    Piece **plateau = plateauRef->plateau;
+    Piece **plateau = plateauRef.plateau;
     actualisePlateau(plateau, coupsPrecedents);
 
     // vérifier comme des bourrins TicTacToe (le dernier coup est decisif)
@@ -151,8 +134,8 @@ void actualisePlateau(Echiquier plateau, ListeCoups coupsPrecedents)
         Piece *piece = &(coup->pieceJouee);
         int old = coup->oldPosition;
         int new = coup->newPosition;
-        plateau[coor_to_pos(old)] = NULL; // coder le convertisseur coor_to_pos
-        plateau[coor_to_pos(new)] = piece;
+        plateau.plateau[coor_to_pos(old)] = NULL; // coder le convertisseur coor_to_pos
+        plateau.plateau[coor_to_pos(new)] = piece;
 
         check = (coup != dernierCoup);
         coup = coup.Next;
@@ -179,4 +162,121 @@ void resetPlateau(Echiquier plateau, ListeCoups coupsPrecedents)
         coup = coup.Prev;
     }
 }
-Coup::Coup(bool isW, Piece &pieceJ, pair<int, int> &newP, pair<int, int> &oldP, bool isTaken = False, bool isSpecial = False) {}
+
+//////
+// COUP
+//////
+
+Coup::Coup(bool isW, const Piece &pieceJ, pair<int, int> newP, pair<int, int> oldP, bool istaken, bool isspecial, Coup *next, Coup *prev)
+{
+    isWhite = isW;
+    pieceJouee = pieceJ;
+    oldPosition = oldP;
+    newPosition = newP;
+    isTaken = istaken;
+    isSpecial = isspecial;
+    Next = next;
+    Prev = prev;
+}
+
+Coup::Coup(const Coup &coup)
+{
+    isWhite = coup.isWhite;
+    pieceJouee = coup.pieceJouee;
+    oldPosition = coup.oldPosition;
+    newPosition = coup.newPosition;
+    isTaken = coup.isTaken;
+    isSpecial = coup.isSpecial;
+    if (coup.Next == 0)
+    {
+        Next = 0;
+    }
+    else
+    {
+        Next = new Coup(*coup.Next);
+    }
+
+    if (coup.Prev == 0)
+    {
+        Prev = 0;
+    }
+    else
+    {
+        Prev = new Coup(*coup.Next);
+    }
+}
+
+//////
+// LISTECOUPS
+//////
+
+void addCoup(ListeCoups &L, const Coup &C)
+{
+    Coup *K = new Coup(C);
+    K->Next = NULL;
+    if (L.nbCoups == 0)
+        L.first = K;
+    else
+        L.last->Next = K;
+    L.last = K;
+    L.nbCoups++;
+}
+
+// pour TTT
+ListeCoups coupsPossiblesTTT(Echiquier plateau, bool isWhite) // est-ce au joueur blanc de jouer ?
+{
+    int nbC = 0;
+    Coup *first = NULL;
+    Coup *current = NULL;
+    Coup *prev = NULL;
+    Coup *next = NULL;
+
+    for (int i = 1; i <= 3; i++)
+    {
+        for (int j = 1; j <= 3; j++)
+        {
+            if (plateau.plateau[coor_to_pos_TTT(pair<int, int>(i, j))] == NULL)
+            {
+                if (nbC == 0)
+                {
+                    first = new Coup(isWhite, Piece(isWhite, pair<int, int>(i, j)), pair<int, int>(i, j), pair<int, int>(0, 0), false, false, NULL, NULL);
+                    prev = first;
+                }
+                else
+                {
+                    current = new Coup(isWhite, Piece(isWhite, pair<int, int>(i, j)), pair<int, int>(i, j), pair<int, int>(0, 0), false, false, NULL, prev);
+                    prev->Next = current;
+                    prev = current;
+                }
+                nbC += 1;
+            }
+        }
+    }
+    ListeCoups coupPossibles(nbC, first, current);
+    return coupPossibles;
+}
+
+ListeCoups::ListeCoups(int nbC, Coup *first_acopier, Coup *last_acopier)
+{
+    nbCoups = nbC;
+    // Coup *first_copier = new Coup(first_acopier);
+    // Coup *last_copier = new Coup(last_acopier);  // je pense qu'il ne faut pas les copier ! A vérifier !
+    first = first_acopier;
+    last = last_acopier;
+}
+
+ListeCoups::ListeCoups(const ListeCoups &a_copier)
+{
+    nbCoups = a_copier.nbCoups;
+    Coup *first_copier = new Coup(*a_copier.first);
+    Coup *last_copier = new Coup(*a_copier.last);
+    first = first_copier;
+    last = last_copier;
+}
+
+ListeCoups::ListeCoups()
+{
+    nbCoups = 0;
+    first = NULL;
+    last = NULL;
+}

@@ -3,6 +3,10 @@
 #include <iostream>
 #define inf = 1000000
 
+////
+// POSITION
+////
+
 class Position
 {
 public:
@@ -20,10 +24,15 @@ public:
     ~Position();
 };
 
+//////
+// COUP
+//////
+
 class Coup
 {
 public:
-    Coup(bool isW, Piece &pieceJ, pair<int, int> &newP, pair<int, int> &oldP, bool isTaken = false, bool isSpecial = false);
+    Coup(bool isW, const Piece &pieceJ, pair<int, int> newP, pair<int, int> oldP, bool isTaken = false, bool isSpecial = false, Coup *Next = NULL, Coup *Prev = NULL);
+    Coup(const Coup &coup);
     bool isWhite;
     Piece pieceJouee;
     // convention : 1 à N, (0,0)=hors plateau
@@ -35,6 +44,10 @@ public:
     Coup *Prev;
 };
 
+//////
+// LISTECOUPS
+//////
+
 class ListeCoups
 {
 public:
@@ -42,7 +55,19 @@ public:
     Coup *first;
     Coup *last;
 
-    ListeCoups(int nbC, ) // Constructeur à faire
-}
+    ListeCoups(int nbC, Coup *first_acopier, Coup *last_acopier);
+    ListeCoups(const ListeCoups &a_copier);
+    ListeCoups();
+};
+
+void addCoup(ListeCoups &L, const Coup &C);
+
+ListeCoups coupsPossiblesTTT(Echiquier plateau, bool isWhite);
+
+////
+
+void actualisePlateau(Echiquier plateau, ListeCoups coupsPrecedents);
+
+void resetPlateau(Echiquier plateau, ListeCoups coupsPrecedents);
 
 #endif
