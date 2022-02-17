@@ -3,6 +3,7 @@
 using namespace std;
 #include <vector>
 #include <iostream>
+#define taillep 3
 
 /*
 CLASSE ET FONCTIONS GENERIQUES AU TTT et ECHECS
@@ -22,8 +23,11 @@ class Piece : public TypePiece
 public:
     bool isWhite; // white=rond
     pair<int, int> position_coor;
-    Piece(bool isWhit = true, pair<int, int> coor = pair<int, int>(0, 0), string type = "Pion");
+
+    Piece(bool isWhit, pair<int, int> coor = pair<int, int>(0, 0), string type = "Pion");
+    Piece();
 };
+ostream &operator<<(ostream &out, const Piece &piece);
 
 class Echiquier
 {
@@ -32,21 +36,12 @@ public:
     Piece **plateau;
     Echiquier(int n = 8);
     ~Echiquier();
-    void affiche3() const;
+    void affiche() const;
 };
-
-/*
-CLASSE ET FONCTIONS  TTT
-*/
-
-int coor_to_pos_TTT(pair<int, int> p);
-pair<int, int> pos_to_coor_TTT(int n);
-
-/*
-CLASSE ET FONCTIONS ECHECS
-*/
 
 int coor_to_pos(pair<int, int> p);
 pair<int, int> pos_to_coor(int n);
+
+ostream &operator<<(ostream &out, const pair<int, int> &pair);
 
 #endif

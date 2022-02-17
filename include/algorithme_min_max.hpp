@@ -1,28 +1,8 @@
 #ifndef ALGORITHME_MIN_MAX_HPP
 #define ALGORITHME_MIN_MAX_HPP
 #include <iostream>
-#define inf = 1000000
-
-////
-// POSITION
-////
-
-class Position
-{
-public:
-    Position(Echiquier &plateau, ListeCoups &coups, Position *positionSoeur, Position *positionFille, bool joueurCoup);
-    Echiquier plateauRef;       // classe Plateau à implémenter
-    ListeCoups coupsPrecedents; // classe Coup à implémenter
-    int valeurPosition = 0;     // attribut, à iniialiser avec valeurPosition()
-    Position *soeur;
-    Position *fille;
-    bool joueur;
-
-    bool estGagnante();
-    int calculeValeurPosition();
-    void generateur(int profondeur);
-    ~Position();
-};
+#include "environnement.hpp"
+#define inf 1000000
 
 //////
 // COUP
@@ -44,6 +24,9 @@ public:
     Coup *Prev;
 };
 
+ostream &operator<<(ostream &out, const Coup &coup);
+bool is_coup_gagnant(const Echiquier &plateauRef, const Coup &dernierCoup);
+
 //////
 // LISTECOUPS
 //////
@@ -60,14 +43,36 @@ public:
     ListeCoups();
 };
 
-void addCoup(ListeCoups &L, const Coup &C);
+void addCoup(ListeCoups *L, const Coup &C);
 
 ListeCoups coupsPossiblesTTT(Echiquier plateau, bool isWhite);
 
 ////
+// POSITION
+////
 
-void actualisePlateau(Echiquier plateau, ListeCoups coupsPrecedents);
+class Position
+{
+public:
+    Echiquier plateauRef;
+    ListeCoups coupsPrecedents;
+    int valeurPosition = 0; // attribut, à iniialiser avec valeurPosition()
+    Position *soeur;
+    Position *fille;
+    bool joueur; // qui a joué le prochain coup =is white ?
 
-void resetPlateau(Echiquier plateau, ListeCoups coupsPrecedents);
+    Position(Echiquier &plateau, ListeCoups &coups, Position *positionSoeur, Position *positionFille, bool joueurCoup);
+    bool estGagnante();
+    int calculeValeurPosition();
+    void generateur(int profondeur);
+    ~Position();
+};
+
+////AUTRE ?
+
+void actualisePlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents);
+void actualisePlateau(Echiquier &plateau, const Coup &coupjoue);
+
+void resetPlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents);
 
 #endif

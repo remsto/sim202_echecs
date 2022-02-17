@@ -18,29 +18,33 @@ Position::Position(Echiquier &plateau, ListeCoups &coups, Position *positionSoeu
 
 Position::~Position() // a faire
 {
-    if (this != NULL)
+
+    coupsPrecedents.~ListeCoups();
+    if (soeur != NULL)
     {
-        coupsPrecedents.~ListeCoups();
         soeur->~Position();
+    }
+    if (fille != NULL)
+    {
         fille->~Position();
     }
 }
 
+// pour TTT a cause de coups possibles
 void Position::generateur(int profondeur)
 {
     if (profondeur != 0)
     {
-        Piece **plateau = plateauRef->plateau;
-        actualisePlateau(plateau, coupsPrecedents);
-        ListeCoups coupsPossibles = coupsPossibles(); // regrouper avec valeur dans une méthode?
-        resetPlateau(plateau);
+        actualisePlateau(plateauRef, coupsPrecedents);
+        ListeCoups coupsPossibles = coupsPossiblesTTT(plateauRef, joueur); // regrouper avec valeur dans une méthode?
+        resetPlateau(plateauRef, coupsPrecedents);
 
         // CREATION 1ere FILLE
         ListeCoups coupsPrecedentsPrec(coupsPrecedents);
         // cpp.last.next = dernier coup = b
-        (coupsPrecedentsPrec.last).Next = coupsPossibles.first;
+        (coupsPrecedentsPrec.last)->Next = coupsPossibles.first;
         // cpp.last = b
-        coupsPrecedentsPrec.last = (coupsPrecedentsPrec.last).Next;
+        coupsPrecedentsPrec.last = (coupsPrecedentsPrec.last)->Next;
         coupsPrecedentsPrec.nbCoups++;
 
         Position posPrec = Position(plateauRef, coupsPrecedentsPrec, &posPrec, this, !joueur);
@@ -50,26 +54,28 @@ void Position::generateur(int profondeur)
             // CREATION SOEUR
 
             // maj coupsPossibles
-            coupsPossibles.first = (coupsPossibles.first).Next coupsPossibles.nbCoups = coupsPossibles.nbCoups - 1
+            coupsPossibles.first = (coupsPossibles.first)->Next;
+            coupsPossibles.nbCoups = coupsPossibles.nbCoups - 1;
 
-                                                                                        // cps = this.cp
-                                                                                        ListeCoups coupsPrecedentsSoeur(coupsPrecedents);
+            // cps = this.cp
+            ListeCoups coupsPrecedentsSoeur(coupsPrecedents);
+
             // cps.last.next = dernier coup = b
-            (coupsPrecedentsSoeur.last).Next = coupsPossibles.first;
+            (coupsPrecedentsSoeur.last)->Next = coupsPossibles.first;
             // cps.last = b
-            coupsPrecedentsSoeur.last = (coupsPrecedentsSoeur.last).Next;
+            coupsPrecedentsSoeur.last = (coupsPrecedentsSoeur.last)->Next;
             coupsPrecedentsSoeur.nbCoups++;
 
             this->soeur = new Position(plateauRef, coupsPrecedentsSoeur, &posPrec, this, !joueur);
             // appeler récursion sur soeur
-            soeur.generateur(profondeur - 1);
+            soeur->generateur(profondeur - 1);
 
-            posPrec(soeur);
+            // posPrec(soeur);
         }
     }
 }
 
-void annexe(int profondeur, ListeCoups coupsPossibles, Position pos)
+void annexe(int profondeur, ListeCoups coupsPossibles) //+ Position pos)
 {
     if (coupsPossibles.first != coupsPossibles.last)
     {
@@ -82,111 +88,202 @@ void annexe(int profondeur, ListeCoups coupsPossibles, Position pos)
 
 int Position::calculeValeurPosition()
 {
-    if estGagnante ()
+    if ((*this).estGagnante())
     {
         return inf;
     }
-    return 0;
+    else
+    {
+        return 0;
+    }
 }
 
-bool Position::estGagnante()
+bool is_coup_gagnant(const Echiquier &plateauRef, const Coup &dernierCoup)
 {
     Piece **plateau = plateauRef.plateau;
-    actualisePlateau(plateau, coupsPrecedents);
+    pair<int, int> this_position = dernierCoup.newPosition;
+    bool couleur = dernierCoup.isWhite;
 
-    // vérifier comme des bourrins TicTacToe (le dernier coup est decisif)
-
-    pair<int, int> this_position = dernierCoup->newPosition;
-    bool couleur = dernierCoup->isWhite;
     // ligne
     int ligne = this_position.first;
     int p = 0;
     for (int j = 1; j <= 3; j++)
     {
-        if (plateau[(i-1)*taille + (j-1)]!=Null{
-            if (plateau[(i - 1) * taille + (j - 1)]->isWhite == couleur)
+        pair<int, int> coor(ligne, j);
+        if (plateau[coor_to_pos(coor)] != NULL)
+        {
+            if (plateau[coor_to_pos(coor)]->isWhite == couleur)
                 p++;
         }
     }
     if (p == 3)
-        return True;
+        return true;
 
-    // colonne
-    int colonne = this_position.second;
-    int q = 0;
-    for (int i = 1; i <= 3; i++)
+    else
     {
-        if (plateau[(i-1)*taille + (colonne-1)]!=Null{
-            if (plateau[(i - 1) * taille + (colonne - 1)]->isWhite == couleur)
-                q++;
-        }
-    }
-    if (q == 3)
-        return True;
 
-    // diagonales
-    if (ligne == colonne)
-    {
-        p = 0;
-        q = 0;
-        for (int k = 1; k <= 3; k++)
+        // colonne
+        int colonne = this_position.second;
+        int q = 0;
+        for (int i = 1; i <= 3; i++)
         {
-            if (plateau[(k-1)*taille + (k-1)]!=Null{
-                if (plateau[(k - 1) * taille + (k - 1)]->isWhite == couleur)
-                    p++;
-            }
-            if (plateau[(3-k)*taille + (3-k)]!=Null{
-                if (plateau[(3 - k) * taille + (3 - k)]->isWhite == couleur)
+            pair<int, int> coor(i, colonne);
+            if (plateau[coor_to_pos(coor)] != NULL)
+            {
+                if (plateau[coor_to_pos(coor)]->isWhite == couleur)
                     q++;
             }
         }
+        if (q == 3)
+            return true;
+        else
+        {
+
+            // diagonales aigu
+            if (ligne == colonne)
+            {
+                int r = 0;
+                for (int k = 1; k <= 3; k++)
+                {
+                    pair<int, int> coor(k, k);
+                    if (plateau[coor_to_pos(coor)] != NULL)
+                    {
+                        if (plateau[coor_to_pos(coor)]->isWhite == couleur)
+                            r++;
+                    }
+                }
+                if (r == 3)
+                    return true;
+            }
+            else
+            {
+
+                // diagonales grave
+                int s = 0;
+                int j = 3;
+                for (int i = 1; i <= 3; i++)
+                {
+                    pair<int, int> coor(i, j);
+                    if (plateau[coor_to_pos(coor)] != NULL)
+                    {
+                        if (plateau[coor_to_pos(coor)]->isWhite == couleur)
+                            s++;
+                    }
+                    j -= 1;
+                }
+                if (s == 3)
+                    return true;
+            }
+        }
     }
+    return false;
+}
 
-    if ((p == 3) || (q == 3))
-        return True;
-    return False;
+ostream &operator<<(ostream &out, const Coup &coup)
+{
+    out << "le coup est : ";
+    out << coup.pieceJouee << " se déplace de " << coup.oldPosition << " à " << coup.newPosition;
+}
 
+bool Position::estGagnante()
+{
+    actualisePlateau(plateauRef, coupsPrecedents);
+
+    // vérifier comme des bourrins TicTacToe (le dernier coup est decisif)
+    Coup *dernierCoup = coupsPrecedents.last;
+    bool is_coup_gagne = is_coup_gagnant(plateauRef, *dernierCoup);
     // On réinitialise le plateau
-    resetPlateau(plateau, coupsPrecedents);
+    resetPlateau(plateauRef, coupsPrecedents);
+    return is_coup_gagne;
 }
 
-void actualisePlateau(Echiquier plateau, ListeCoups coupsPrecedents)
+// TTT
+void actualisePlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents)
 {
-    Coup *dernierCoup = coupsPrecedents->last;
-    Coup *premierCoup = coupsPrecedents->first;
-    Coup *coup = premierCoup;
-    bool check = True;
-    while (check)
-    {
-        Piece *piece = &(coup->pieceJouee);
-        int old = coup->oldPosition;
-        int new = coup->newPosition;
-        plateau.plateau[coor_to_pos(old)] = NULL; // coder le convertisseur coor_to_pos
-        plateau.plateau[coor_to_pos(new)] = piece;
+    // Coup *dernierCoup = coupsPrecedents.last;
+    Coup *coup = coupsPrecedents.first;
 
-        check = (coup != dernierCoup);
-        coup = coup.Next;
+    while (coup != NULL)
+    {
+        Piece piece = &(coup->pieceJouee);
+        pair<int, int> old = coup->oldPosition;
+        pair<int, int> news = coup->newPosition;
+        bool is_prise = coup->isTaken;
+        Piece *new_piece = plateau.plateau[coor_to_pos(news)];
+
+        if (old == pair<int, int>(0, 0)) // si tictactoe
+        {
+            new_piece = new Piece(piece); // on doit créer la pièce !
+        }
+        else // si echecs
+        {
+            Piece *old_piece = plateau.plateau[coor_to_pos(old)];
+
+            if (is_prise)
+            {
+                new_piece->~Piece();
+            }
+            new_piece = old_piece;
+            old_piece = NULL;
+        }
+        new_piece->position_coor = news;
+        coup = coup->Next;
     }
 }
 
-void resetPlateau(Echiquier plateau, ListeCoups coupsPrecedents)
+// quand on a qu'un coup à faire ! + actualise la pièce
+void actualisePlateau(Echiquier &plateau, const Coup &coupjoue)
 {
-    Coup *dernierCoup = coupsPrecedents->last;
-    Coup *premierCoup = coupsPrecedents->first;
-    Coup *coup = premierCoup;
+    Piece piece = (coupjoue.pieceJouee);
+    pair<int, int> old = coupjoue.oldPosition;
+    pair<int, int> news = coupjoue.newPosition;
+    bool is_prise = coupjoue.isTaken;
+    Piece *new_piece;
 
-    bool check = True;
-    coup = dernierCoup;
-    while (check)
+    if (old == pair<int, int>(0, 0)) // si tictactoe
     {
-        Piece *piece = &(coup->pieceJouee);
-        int old = coup->oldPosition;
-        int new = coup->newPosition;
-        plateau[coor_to_pos(new)] = NULL; // coder le convertisseur coor_to_pos
-        plateau[coor_to_pos(old)] = piece;
+        new_piece = new Piece(piece); // on doit créer la pièce !
+    }
+    else // si echecs
+    {
+        Piece *old_piece = plateau.plateau[coor_to_pos(old)];
 
-        check = (coup != premierCoup);
-        coup = coup.Prev;
+        if (is_prise)
+        {
+            new_piece->~Piece();
+        }
+        new_piece = old_piece;
+        old_piece = NULL;
+    }
+    new_piece->position_coor = news;
+    plateau.plateau[coor_to_pos(news)] = new_piece;
+}
+
+void resetPlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents)
+{
+    Coup *coup = coupsPrecedents.last;
+    // Coup *premierCoup = coupsPrecedents.first;
+
+    while (coup != NULL)
+    {
+        Piece piece = &(coup->pieceJouee);
+        pair<int, int> old = coup->oldPosition;
+        pair<int, int> news = coup->newPosition;
+        Piece *new_piece = plateau.plateau[coor_to_pos(news)]; // on remonte à l'envers les étapes
+
+        if (old == pair<int, int>(0, 0)) // si tictactoe
+        {
+            new_piece->~Piece(); // on doit supprimer la pièce !
+        }
+        else // si echecs ! faire la prise ! A REVOIR ! impossible ou rajouter la liste des pièces prises
+        {
+            Piece *old_piece = plateau.plateau[coor_to_pos(old)];
+            old_piece = new_piece;
+            new_piece = NULL;
+            old_piece->position_coor = old;
+        }
+
+        coup = coup->Prev;
     }
 }
 
@@ -237,16 +334,16 @@ Coup::Coup(const Coup &coup)
 // LISTECOUPS
 //////
 
-void addCoup(ListeCoups &L, const Coup &C)
+void addCoup(ListeCoups *L, const Coup &C)
 {
     Coup *K = new Coup(C);
     K->Next = NULL;
-    if (L.nbCoups == 0)
-        L.first = K;
+    if (L->nbCoups == 0)
+        L->first = K;
     else
-        L.last->Next = K;
-    L.last = K;
-    L.nbCoups++;
+        L->last->Next = K;
+    L->last = K;
+    L->nbCoups++;
 }
 
 // pour TTT
@@ -256,13 +353,12 @@ ListeCoups coupsPossiblesTTT(Echiquier plateau, bool isWhite) // est-ce au joueu
     Coup *first = NULL;
     Coup *current = NULL;
     Coup *prev = NULL;
-    Coup *next = NULL;
 
     for (int i = 1; i <= 3; i++)
     {
         for (int j = 1; j <= 3; j++)
         {
-            if (plateau.plateau[coor_to_pos_TTT(pair<int, int>(i, j))] == NULL)
+            if (plateau.plateau[coor_to_pos(pair<int, int>(i, j))] == NULL)
             {
                 if (nbC == 0)
                 {

@@ -5,23 +5,53 @@ using namespace std;
 
 /*
 CLASSE ET FONCTIONS GENERIQUES AU TTT et ECHECS
+
+
+pour info :
+
+
+3| 6 | 7 | 8 |
+2| 3 | 4 | 5 |
+1| 0 | 1 | 2 |
+   1   2   3
 */
 
 // class TypePiece
 
 TypePiece::TypePiece(string type)
 {
-    this->type = type;
-    this->deplac_relatif = vector<pair<int, int>>();
-    this->valeur = 1;
+    type = type;
+    deplac_relatif = vector<pair<int, int>>();
+    valeur = 1;
 }
 
 // class Piece
 
 Piece::Piece(bool isWhit, pair<int, int> coor, string type) : TypePiece(type)
 {
-    this->isWhite = isWhit;
-    this->position_coor = coor;
+    isWhite = isWhit;
+    position_coor = coor;
+}
+
+Piece::Piece()
+{
+    isWhite = false;
+    position_coor = pair<int, int>(0, 0);
+}
+
+ostream &operator<<(ostream &out, const Piece &piece)
+{
+    out << "P";
+    // cout << (piece.type[0]); // P ou D ou R ou ...
+    if (piece.isWhite)
+    {
+        out << "b";
+    }
+    else
+    {
+        out << "n";
+    }
+    return out;
 }
 
 // class Echiquier
@@ -45,69 +75,55 @@ Echiquier::~Echiquier()
     delete[] plateau;
 }
 
-void Echiquier::affiche3() const
+void Echiquier::affiche() const
 {
-    for (int i = 0; i < taille * taille; i++)
+    for (int i = taille; i > 0; i--)
     {
-        Piece *piece = plateau[i];
-        if (i % taille == 0)
+        cout << "   --------------\n";
+        cout << i << " |";
+        for (int j = 1; j <= taille; j++)
         {
-            cout << "---------------\n";
-            cout << taille - (i / taille) << " |";
-        }
-        if (piece == NULL)
-        {
-            cout << "   |";
-        }
-        else
-        {
-            cout << piece->type[0]; // P ou D ou R ou ...
-            if (piece->isWhite)
+            Piece *piece = plateau[coor_to_pos(pair<int, int>(i, j))];
+            if (piece == NULL)
             {
-                cout << "b";
+                cout << "    |";
             }
             else
             {
-                cout << "n";
+                cout << " " << *piece;
+                cout << " |";
             }
-            cout << " |";
         }
-        // ajout des retours à la ligne
-        if (i % taille == taille - 1)
-            cout << "\n";
+        cout << "\n";
     }
-    cout << "   ------------\n";
-    cout << "  | A | B | C |\n";
+    cout << "   --------------\n";
+    cout << "     A    B    C  \n";
 }
-
-/*
-CLASSE ET FONCTIONS TTT
-*/
-
-int coor_to_pos_TTT(pair<int, int> p)
-{
-    int n = (p.first - 1) * 3 + (p.second - 1);
-    return n;
-}
-
-pair<int, int> pos_to_coor_TTT(int n)
-{
-    pair<int, int> p((n / 3) + 1, (n % 3) + 1);
-    return p;
-}
-
-/*
-CLASSE ET FONCTIONS ECHECS
-*/
 
 int coor_to_pos(pair<int, int> p)
 {
-    int n = (p.first - 1) * 8 + (p.second - 1);
+    int n = (p.first - 1) * taillep + (p.second - 1);
     return n;
 }
 
 pair<int, int> pos_to_coor(int n)
 {
-    pair<int, int> p((n / 8) + 1, (n % 8) + 1);
+    pair<int, int> p((n / taillep) + 1, (n % taillep) + 1);
     return p;
+}
+
+ostream &operator<<(ostream &out, const pair<int, int> &pair)
+{
+    out << "(" << pair.first << ",";
+    int colonne_int = pair.second;
+    if (colonne_int == 0)
+    {
+        out << colonne_int << ")";
+    }
+    else
+    {
+        char colonne = pair.second + 64;
+        out << colonne << ")";
+    }
+    return out;
 }
