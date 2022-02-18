@@ -1,7 +1,6 @@
 #include <iostream>
 using namespace std;
 #include "ordi_min_max.hpp"
-#include "environnement.hpp"
 
 ////
 // POSITION
@@ -36,32 +35,32 @@ void Position::generateur(int profondeur)
     if (profondeur != 0)
     {
         actualisePlateau(plateauRef, coupsPrecedents);
-        ListeCoups coupsPossibles = coupsPossiblesTTT(plateauRef, joueur); // regrouper avec valeur dans une méthode?
+        ListeCoups *coupsPossibles = coupsPossiblesTTT(plateauRef, joueur); // regrouper avec valeur dans une méthode?
         resetPlateau(plateauRef, coupsPrecedents);
 
         // CREATION 1ere FILLE
         ListeCoups coupsPrecedentsPrec(coupsPrecedents);
         // cpp.last.next = dernier coup = b
-        (coupsPrecedentsPrec.last)->Next = coupsPossibles.first;
+        (coupsPrecedentsPrec.last)->Next = coupsPossibles->first;
         // cpp.last = b
         coupsPrecedentsPrec.last = (coupsPrecedentsPrec.last)->Next;
         coupsPrecedentsPrec.nbCoups++;
 
         Position posPrec = Position(plateauRef, coupsPrecedentsPrec, &posPrec, this, !joueur);
 
-        for (int i = 0; i < coupsPossibles.nbCoups; i++)
+        for (int i = 0; i < coupsPossibles->nbCoups; i++)
         {
             // CREATION SOEUR
 
             // maj coupsPossibles
-            coupsPossibles.first = (coupsPossibles.first)->Next;
-            coupsPossibles.nbCoups = coupsPossibles.nbCoups - 1;
+            coupsPossibles->first = (coupsPossibles->first)->Next;
+            coupsPossibles->nbCoups = coupsPossibles->nbCoups - 1;
 
             // cps = this.cp
             ListeCoups coupsPrecedentsSoeur(coupsPrecedents);
 
             // cps.last.next = dernier coup = b
-            (coupsPrecedentsSoeur.last)->Next = coupsPossibles.first;
+            (coupsPrecedentsSoeur.last)->Next = coupsPossibles->first;
             // cps.last = b
             coupsPrecedentsSoeur.last = (coupsPrecedentsSoeur.last)->Next;
             coupsPrecedentsSoeur.nbCoups++;
