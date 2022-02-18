@@ -40,20 +40,18 @@ void Position::generateur(int profondeur)
         resetPlateau(plateauRef, coupsPrecedents);
 
         // CREATION 1ere FILLE
-        ListeCoups coupsPrecedentsPrec(coupsPrecedents);
-        // cpp.last.next = dernier coup = b
-        (coupsPrecedentsPrec.last)->Next = coupsPossibles.first;
-        // cpp.last = b
-        coupsPrecedentsPrec.last = (coupsPrecedentsPrec.last)->Next;
-        coupsPrecedentsPrec.nbCoups++;
+        // copie coupsPrecedents
+        ListeCoups coupsPrecedentsCurrent(coupsPrecedents);
+        // Le 1er coupPossible devient le dernier coupPrecedent
+        (coupsPrecedentsCurrent.last)->Next = coupsPossibles.first;
+        coupsPrecedentsCurrent.last = (coupsPrecedentsPrec.last)->Next;
+        coupsPrecedentsCurrent.nbCoups++;
 
-        Position posPrec = Position(plateauRef, coupsPrecedentsPrec, &posPrec, this, !joueur);
+        this->fille = new Position(plateauRef, coupsPrecedentsCurrent, NULL, NULL, !joueur);
+        Position *current = this->fille;
 
         for (int i = 0; i < coupsPossibles.nbCoups; i++)
-        {
-            // CREATION SOEUR
-
-            // maj coupsPossibles
+        {   // maj coupsPossibles
             coupsPossibles.first = (coupsPossibles.first)->Next;
             coupsPossibles.nbCoups = coupsPossibles.nbCoups - 1;
 
@@ -66,11 +64,15 @@ void Position::generateur(int profondeur)
             coupsPrecedentsSoeur.last = (coupsPrecedentsSoeur.last)->Next;
             coupsPrecedentsSoeur.nbCoups++;
 
-            this->soeur = new Position(plateauRef, coupsPrecedentsSoeur, &posPrec, this, !joueur);
-            // appeler récursion sur soeur
-            soeur->generateur(profondeur - 1);
+            // CREATION SOEUR
+            current->soeur = new Position(plateauRef, coupsPrecedentsSoeur, NULL, NULL, !joueur);
+            
+            // Passer à la suivante
+            current = current->soeur;
 
-            // posPrec(soeur);
+            // Appeler récursion sur current
+            current->generateur(profondeur - 1);
+
         }
     }
 }
