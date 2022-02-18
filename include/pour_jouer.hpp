@@ -1,8 +1,7 @@
-#ifndef ALGORITHME_MIN_MAX_HPP
-#define ALGORITHME_MIN_MAX_HPP
+#ifndef POUR_JOUER_HPP
+#define POUR_JOUER_HPP
 #include <iostream>
 #include "environnement.hpp"
-#define inf 1000000
 
 //////
 // COUP
@@ -47,28 +46,9 @@ void addCoup(ListeCoups *L, const Coup &C);
 
 ListeCoups coupsPossiblesTTT(Echiquier plateau, bool isWhite);
 
-////
-// POSITION
-////
-
-class Position
-{
-public:
-    Echiquier plateauRef;
-    ListeCoups coupsPrecedents;
-    int valeurPosition = 0; // attribut, à iniialiser avec valeurPosition()
-    Position *soeur;
-    Position *fille;
-    bool joueur; // qui a joué le prochain coup =is white ?
-
-    Position(Echiquier &plateau, ListeCoups &coups, Position *positionSoeur, Position *positionFille, bool joueurCoup);
-    bool estGagnante();
-    int calculeValeurPosition();
-    void generateur(int profondeur);
-    ~Position();
-};
-
-////AUTRE ?
+///////
+////MAJ plateau
+///////
 
 void actualisePlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents);
 void actualisePlateau(Echiquier &plateau, const Coup &coupjoue);

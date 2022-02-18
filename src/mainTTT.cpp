@@ -1,7 +1,8 @@
 #include <iostream>
 using namespace std;
 #include "environnement.hpp"
-#include "algorithme_min_max.hpp"
+#include "ordi_min_max.hpp"
+#include "ordi_aleatoire.hpp"
 //#define cout std::cout
 
 int main()

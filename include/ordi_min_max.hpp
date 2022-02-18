@@ -1,0 +1,29 @@
+#ifndef ORDI_MIN_MAX_HPP
+#define ORDI_MIN_MAX_HPP
+#include <iostream>
+#include "environnement.hpp"
+#define inf 1000000
+#include "pour_jouer.hpp"
+
+////
+// POSITION
+////
+
+class Position
+{
+public:
+    Echiquier plateauRef;
+    ListeCoups coupsPrecedents;
+    int valeurPosition = 0; // attribut, à iniialiser avec valeurPosition()
+    Position *soeur;
+    Position *fille;
+    bool joueur; // qui a joué le prochain coup =is white ?
+
+    Position(Echiquier &plateau, ListeCoups &coups, Position *positionSoeur, Position *positionFille, bool joueurCoup);
+    bool estGagnante();
+    int calculeValeurPosition();
+    void generateur(int profondeur);
+    ~Position();
+};
+
+#endif
