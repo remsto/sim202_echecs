@@ -1,7 +1,6 @@
 #include <iostream>
 using namespace std;
 #include "pour_jouer.hpp"
-#include "environnement.hpp"
 
 //////
 // COUP
@@ -10,7 +9,8 @@ using namespace std;
 Coup::Coup(bool isW, const Piece &pieceJ, pair<int, int> newP, pair<int, int> oldP, bool istaken, bool isspecial, Coup *next, Coup *prev)
 {
     isWhite = isW;
-    pieceJouee = pieceJ;
+    Piece *piece_ptr = new Piece(pieceJ);
+    pieceJouee = *piece_ptr;
     oldPosition = oldP;
     newPosition = newP;
     isTaken = istaken;
@@ -22,7 +22,8 @@ Coup::Coup(bool isW, const Piece &pieceJ, pair<int, int> newP, pair<int, int> ol
 Coup::Coup(const Coup &coup)
 {
     isWhite = coup.isWhite;
-    pieceJouee = coup.pieceJouee;
+    Piece *piece_ptr = new Piece(coup.pieceJouee);
+    pieceJouee = *piece_ptr;
     oldPosition = coup.oldPosition;
     newPosition = coup.newPosition;
     isTaken = coup.isTaken;
@@ -33,7 +34,7 @@ Coup::Coup(const Coup &coup)
     }
     else
     {
-        Next = new Coup(*coup.Next);
+        Next = coup.Next; // new ??
     }
 
     if (coup.Prev == 0)
@@ -42,7 +43,7 @@ Coup::Coup(const Coup &coup)
     }
     else
     {
-        Prev = new Coup(*coup.Next);
+        Prev = coup.Next;
     }
 }
 
@@ -50,6 +51,7 @@ ostream &operator<<(ostream &out, const Coup &coup)
 {
     out << "le coup est : ";
     out << coup.pieceJouee << " se déplace de " << coup.oldPosition << " à " << coup.newPosition;
+    return out;
 }
 
 bool is_coup_gagnant(const Echiquier &plateauRef, const Coup &dernierCoup)
@@ -150,7 +152,7 @@ void addCoup(ListeCoups *L, const Coup &C)
 }
 
 // pour TTT
-ListeCoups coupsPossiblesTTT(Echiquier plateau, bool isWhite) // est-ce au joueur blanc de jouer ?
+ListeCoups *coupsPossiblesTTT(const Echiquier &plateau, bool isWhite) // est-ce au joueur blanc de jouer ?
 {
     int nbC = 0;
     Coup *first = NULL;
@@ -178,7 +180,7 @@ ListeCoups coupsPossiblesTTT(Echiquier plateau, bool isWhite) // est-ce au joueu
             }
         }
     }
-    ListeCoups coupPossibles(nbC, first, current);
+    ListeCoups *coupPossibles = new ListeCoups(nbC, first, current);
     return coupPossibles;
 }
 
@@ -252,15 +254,17 @@ void actualisePlateau(Echiquier &plateau, const Coup &coupjoue)
     pair<int, int> old = coupjoue.oldPosition;
     pair<int, int> news = coupjoue.newPosition;
     bool is_prise = coupjoue.isTaken;
-    Piece *new_piece;
 
     if (old == pair<int, int>(0, 0)) // si tictactoe
     {
-        new_piece = new Piece(piece); // on doit créer la pièce !
+        Piece *new_piece = new Piece(piece); // on doit créer la pièce ?
+        new_piece->position_coor = news;
+        plateau.plateau[coor_to_pos(news)] = new_piece;
     }
     else // si echecs
     {
         Piece *old_piece = plateau.plateau[coor_to_pos(old)];
+        Piece *new_piece = plateau.plateau[coor_to_pos(news)];
 
         if (is_prise)
         {
@@ -268,9 +272,10 @@ void actualisePlateau(Echiquier &plateau, const Coup &coupjoue)
         }
         new_piece = old_piece;
         old_piece = NULL;
+
+        new_piece->position_coor = news;
+        plateau.plateau[coor_to_pos(news)] = new_piece;
     }
-    new_piece->position_coor = news;
-    plateau.plateau[coor_to_pos(news)] = new_piece;
 }
 
 void resetPlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents)

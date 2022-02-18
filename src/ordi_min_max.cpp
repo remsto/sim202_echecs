@@ -1,7 +1,6 @@
 #include <iostream>
 using namespace std;
 #include "ordi_min_max.hpp"
-#include "environnement.hpp"
 
 ////
 // POSITION
@@ -36,7 +35,7 @@ void Position::generateur(int profondeur)
     if (profondeur != 0)
     {
         actualisePlateau(plateauRef, coupsPrecedents);
-        ListeCoups coupsPossibles = coupsPossiblesTTT(plateauRef, joueur); // regrouper avec valeur dans une méthode?
+        ListeCoups *coupsPossibles = coupsPossiblesTTT(plateauRef, joueur); // regrouper avec valeur dans une méthode?
         resetPlateau(plateauRef, coupsPrecedents);
 
         // CREATION 1ere FILLE
@@ -59,7 +58,7 @@ void Position::generateur(int profondeur)
             ListeCoups coupsPrecedentsSoeur(coupsPrecedents);
 
             // cps.last.next = dernier coup = b
-            (coupsPrecedentsSoeur.last)->Next = coupsPossibles.first;
+            (coupsPrecedentsSoeur.last)->Next = coupsPossibles->first;
             // cps.last = b
             coupsPrecedentsSoeur.last = (coupsPrecedentsSoeur.last)->Next;
             coupsPrecedentsSoeur.nbCoups++;

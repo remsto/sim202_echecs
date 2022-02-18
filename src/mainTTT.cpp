@@ -1,7 +1,5 @@
 #include <iostream>
 using namespace std;
-#include "environnement.hpp"
-#include "ordi_min_max.hpp"
 #include "ordi_aleatoire.hpp"
 //#define cout std::cout
 
@@ -11,7 +9,7 @@ int main()
     bool is_fini = false;
     Echiquier *EchiTTT = new Echiquier(taillep);
     int n = 0;
-    int boucle_max = 1000;
+    int boucle_max = taillep * taillep;
     int ligne;
     char colonne_char;
     int colonne; // pour entrer où jouer
@@ -21,12 +19,15 @@ int main()
     bool is_white_1;
     bool is_white_courant;
     pair<int, int> p;
+
     Coup *coupjoue;
+    Piece *piece_jouee;
 
     ListeCoups *historique_coups = new ListeCoups();
 
     // Tirez au sort celui qui commence
-    cout << "Bienvenue, tout d'abord choisissons qui joue: \n ";
+    cout << "Bienvenue, tout d'abord choisissons qui joue: \n";
+
     cout << "Pour chaque joueur, entrez un entier sachant que : \n";
     cout << "1: Joueur humain \n";
     cout << "2: Ordi aléatoire \n";
@@ -48,7 +49,7 @@ int main()
     {
         n += 1; // a enlever a terme
 
-        // a qui est ce de jouer ?
+        // a qui est-ce de jouer ?
         if (is_tour_joueur1)
         {
             joueur_courant = joueur1;
@@ -98,7 +99,7 @@ int main()
                 }
             }
 
-            Piece *piece_jouee = new Piece(is_white_courant);
+            piece_jouee = new Piece(is_white_courant);
             coupjoue = new Coup(is_white_courant, *piece_jouee, p, piece_jouee->position_coor);
             cout << *coupjoue << "\n";
         }
@@ -106,7 +107,8 @@ int main()
         // C'est à l'ordi aléatoire de jouer, , choix du coup !
         else if (joueur_courant == 2)
         {
-            cout << "flemme";
+            coupjoue = coup_aleatoire_TTT(*EchiTTT, is_white_courant);
+            cout << *coupjoue << "\n";
         }
 
         // C'est à l'ordi min_max de profondeur ?? de jouer,, choix du coup !
@@ -133,7 +135,14 @@ int main()
         }
         else
         {
-            cout << "Pas de Victoire, on continue ! \n";
+            if (n != boucle_max)
+            {
+                cout << "Pas de Victoire, on continue ! \n";
+            }
+            else
+            {
+                cout << "Egalité !\n";
+            }
         }
         is_tour_joueur1 = (!(is_tour_joueur1));
     }

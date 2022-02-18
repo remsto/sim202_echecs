@@ -1,7 +1,11 @@
-using namespace std;
+
 #include <vector>
 #include <iostream>
+#include <random>
+#include <chrono>
+
 #include "environnement.hpp"
+using namespace std;
 
 /*
 CLASSE ET FONCTIONS GENERIQUES AU TTT et ECHECS
@@ -33,9 +37,9 @@ Piece::Piece(bool isWhit, pair<int, int> coor, string type) : TypePiece(type)
     position_coor = coor;
 }
 
-Piece::Piece()
+Piece::Piece() : TypePiece()
 {
-    isWhite = false;
+    isWhite = true;
     position_coor = pair<int, int>(0, 0);
 }
 
@@ -79,25 +83,26 @@ void Echiquier::affiche() const
 {
     for (int i = taille; i > 0; i--)
     {
-        cout << "   --------------\n";
-        cout << i << " |";
+        std::cout << "   --------------\n";
+        std::cout << i << " |";
+
         for (int j = 1; j <= taille; j++)
         {
             Piece *piece = plateau[coor_to_pos(pair<int, int>(i, j))];
             if (piece == NULL)
             {
-                cout << "    |";
+                std::cout << "    |";
             }
             else
             {
-                cout << " " << *piece;
-                cout << " |";
+                std::cout << " " << *piece;
+                std::cout << " |";
             }
         }
-        cout << "\n";
+        std::cout << "\n";
     }
-    cout << "   --------------\n";
-    cout << "     A    B    C  \n";
+    std::cout << "   --------------\n";
+    std::cout << "     A    B    C  \n";
 }
 
 int coor_to_pos(pair<int, int> p)
@@ -126,4 +131,18 @@ ostream &operator<<(ostream &out, const pair<int, int> &pair)
         out << colonne << ")";
     }
     return out;
+}
+
+//////
+// ALEA
+//////
+
+int tirage_alea_entier(int min, int max)
+{
+    default_random_engine re(chrono::system_clock::now().time_since_epoch().count());
+    mt19937 gen(re());
+    uniform_int_distribution<> distr(min, max);
+
+    int n = distr(gen);
+    return n;
 }

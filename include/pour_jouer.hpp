@@ -1,5 +1,6 @@
 #ifndef POUR_JOUER_HPP
 #define POUR_JOUER_HPP
+
 #include <iostream>
 #include "environnement.hpp"
 
@@ -44,7 +45,7 @@ public:
 
 void addCoup(ListeCoups *L, const Coup &C);
 
-ListeCoups coupsPossiblesTTT(Echiquier plateau, bool isWhite);
+ListeCoups *coupsPossiblesTTT(const Echiquier &plateau, bool isWhite);
 
 ///////
 ////MAJ plateau

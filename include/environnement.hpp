@@ -1,9 +1,13 @@
 #ifndef ENVIRONNEMENT_HPP
 #define ENVIRONNEMENT_HPP
-using namespace std;
+
 #include <vector>
 #include <iostream>
+#include <random>
+
 #define taillep 3
+
+using namespace std;
 
 /*
 CLASSE ET FONCTIONS GENERIQUES AU TTT et ECHECS
@@ -43,5 +47,11 @@ int coor_to_pos(pair<int, int> p);
 pair<int, int> pos_to_coor(int n);
 
 ostream &operator<<(ostream &out, const pair<int, int> &pair);
+
+//////
+// ALEA
+//////
+
+int tirage_alea_entier(int min, int max);
 
 #endif
