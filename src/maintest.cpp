@@ -1,17 +1,16 @@
 #include "environnement.hpp"
 #include <iostream>
 #include <random>
+using namespace std;
 
-int main3()
+int main1()
 {
-    random_device rd;
-    default_random_engine eng(rd());
-    uniform_int_distribution<int> distr(1, 4);
 
-    for (int n = 0; n < 100; n++)
-    {
-        cout << distr(eng) << ";";
-    }
-    cout << "\n L'autre \n";
-    return 0;
+    Piece *test = new Piece(true, pair<int, int>(0, 0), "Pion");
+    string a = test->type;
+    cout << "type : " << a;
+    char b = (test->type).at(0);
+    cout << "premiere lettre : " << b;
+    char c = (test->type)[0];
+    cout << " " << c;
 }

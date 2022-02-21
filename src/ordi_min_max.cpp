@@ -103,7 +103,7 @@ bool Position::estGagnante()
 
     // vérifier comme des bourrins TicTacToe (le dernier coup est decisif)
     Coup *dernierCoup = coupsPrecedents.last;
-    bool is_coup_gagne = is_coup_gagnant(plateauRef, *dernierCoup);
+    bool is_coup_gagne = is_coup_gagnant_TTT(plateauRef, *dernierCoup);
     // On réinitialise le plateau
     resetPlateau(plateauRef, coupsPrecedents);
     return is_coup_gagne;

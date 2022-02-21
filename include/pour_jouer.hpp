@@ -11,7 +11,7 @@
 class Coup
 {
 public:
-    Coup(bool isW, const Piece &pieceJ, pair<int, int> newP, pair<int, int> oldP, bool isTaken = false, bool isSpecial = false, Coup *Next = NULL, Coup *Prev = NULL);
+    Coup(bool isW, const Piece &pieceJ, pair<int, int> newP, pair<int, int> oldP, int num_tour_de_jeu = 0, bool isTaken = false, bool isSpecial = false, Coup *Next = NULL, Coup *Prev = NULL, bool is_echec = false, bool is_mat = false);
     Coup(const Coup &coup);
     bool isWhite;
     Piece pieceJouee;
@@ -22,10 +22,14 @@ public:
     bool isSpecial;
     Coup *Next;
     Coup *Prev;
+    bool is_echec;
+    bool is_mat;
+    int num_tour_de_jeu;
 };
 
 ostream &operator<<(ostream &out, const Coup &coup);
-bool is_coup_gagnant(const Echiquier &plateauRef, const Coup &dernierCoup);
+
+bool is_coup_gagnant_TTT(const Echiquier &plateauRef, const Coup &dernierCoup);
 
 //////
 // LISTECOUPS
@@ -45,7 +49,7 @@ public:
 
 void addCoup(ListeCoups *L, const Coup &C);
 
-ListeCoups *coupsPossiblesTTT(const Echiquier &plateau, bool isWhite);
+ListeCoups *coupsPossiblesTTT(const Echiquier &plateau, bool isWhite, int num_tour);
 
 ///////
 ////MAJ plateau

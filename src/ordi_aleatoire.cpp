@@ -4,9 +4,9 @@
 #include <random>
 #include <ctime>
 
-Coup *coup_aleatoire_TTT(const Echiquier &Echi, bool is_white)
+Coup *coup_aleatoire_TTT(const Echiquier &Echi, bool is_white, int num_tour)
 {
-    ListeCoups *Liste_possible = coupsPossiblesTTT(Echi, is_white);
+    ListeCoups *Liste_possible = coupsPossiblesTTT(Echi, is_white, num_tour);
     int nbc = Liste_possible->nbCoups;
     int choix_coup = tirage_alea_entier(1, nbc);
     Coup *coup_choisi = Liste_possible->first;
@@ -17,4 +17,8 @@ Coup *coup_aleatoire_TTT(const Echiquier &Echi, bool is_white)
     Coup *a_retourner = new Coup(*coup_choisi);
     Liste_possible->~ListeCoups();
     return a_retourner;
+}
+
+Coup *coup_aleatoire_echecs(const Echiquier &Echi, bool is_white)
+{
 }

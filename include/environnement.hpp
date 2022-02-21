@@ -5,19 +5,40 @@
 #include <iostream>
 #include <random>
 
-#define taillep 3
-
 using namespace std;
 
 /*
 CLASSE ET FONCTIONS GENERIQUES AU TTT et ECHECS
 */
 
+class Deplac_rel
+{
+public:
+    pair<int, int> coor;
+    Deplac_rel *Next;
+
+    Deplac_rel(pair<int, int> coord = pair<int, int>(0, 0), Deplac_rel *next = NULL);
+    Deplac_rel(const Deplac_rel &dep_a_copier);
+};
+ostream &operator<<(ostream &out, const Deplac_rel &dep);
+
+class ListDeplac_rel
+{
+public:
+    int nb_deplacement;
+    Deplac_rel *first;
+    Deplac_rel *last;
+
+    ListDeplac_rel(int nbdepla = 0, Deplac_rel *first_dep = NULL, Deplac_rel *last_dep = NULL);
+};
+
+ostream &operator<<(ostream &out, const ListDeplac_rel &listDep);
+
 class TypePiece
 {
 public:
     string type; // pion pour ttt
-    vector<pair<int, int>> deplac_relatif;
+    ListDeplac_rel deplac_relatif;
     int valeur;
     TypePiece(string type = "Pion");
 };
@@ -43,8 +64,8 @@ public:
     void affiche() const;
 };
 
-int coor_to_pos(pair<int, int> p);
-pair<int, int> pos_to_coor(int n);
+int coor_to_pos(pair<int, int> p, int taillep);
+pair<int, int> pos_to_coor(int n, int taillep);
 
 ostream &operator<<(ostream &out, const pair<int, int> &pair);
 
@@ -53,5 +74,11 @@ ostream &operator<<(ostream &out, const pair<int, int> &pair);
 //////
 
 int tirage_alea_entier(int min, int max);
+
+/////
+// Echecs
+/////
+
+void mise_en_place_echec_piece(Echiquier &EchiTTT);
 
 #endif
