@@ -50,6 +50,7 @@ public:
     pair<int, int> position_coor;
 
     Piece(bool isWhit, pair<int, int> coor = pair<int, int>(0, 0), string type = "Pion");
+    Piece(const Piece &piece_a_copier);
     Piece();
 };
 ostream &operator<<(ostream &out, const Piece &piece);
@@ -59,6 +60,9 @@ class Echiquier
 public:
     int taille; // 3 ou 8
     Piece **plateau;
+    Piece *roi_noir; // car on en a tjrs besoin (pour is_echec and co)!
+    Piece *roi_blanc;
+
     Echiquier(int n = 8);
     ~Echiquier();
     void affiche() const;
@@ -80,5 +84,6 @@ int tirage_alea_entier(int min, int max);
 /////
 
 void mise_en_place_echec_piece(Echiquier &EchiTTT);
+pair<int, int> operator+(pair<int, int> p1, pair<int, int> p2);
 
 #endif

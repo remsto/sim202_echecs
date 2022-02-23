@@ -8,5 +8,5 @@
 
 Coup *coup_aleatoire_TTT(const Echiquier &Echi, bool is_white, int num_tour);
 
-Coup *coup_aleatoire_echecs(const Echiquier &Echi, bool is_white);
+Coup *coup_aleatoire_echecs(const Echiquier &Echi, bool is_white, int num_tour);
 #endif

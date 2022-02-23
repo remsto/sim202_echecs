@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 using namespace std;
 #include "pour_jouer.hpp"
 
@@ -6,14 +7,14 @@ using namespace std;
 // COUP
 //////
 
-Coup::Coup(bool isW, const Piece &pieceJ, pair<int, int> newP, pair<int, int> oldP, int num_tour, bool istaken, bool isspecial, Coup *next, Coup *prev, bool is_ech, bool is_m)
+Coup::Coup(bool isW, const Piece &pieceJ, pair<int, int> newP, pair<int, int> oldP, int num_tour, Piece *taken, bool isspecial, Coup *next, Coup *prev, bool is_ech, bool is_m)
 {
     isWhite = isW;
     Piece *piece_ptr = new Piece(pieceJ);
     pieceJouee = *piece_ptr;
     oldPosition = oldP;
     newPosition = newP;
-    isTaken = istaken;
+    Taken = taken;
     isSpecial = isspecial;
     Next = next;
     Prev = prev;
@@ -29,7 +30,7 @@ Coup::Coup(const Coup &coup)
     pieceJouee = *piece_ptr;
     oldPosition = coup.oldPosition;
     newPosition = coup.newPosition;
-    isTaken = coup.isTaken;
+    Taken = coup.Taken;
     isSpecial = coup.isSpecial;
     is_echec = coup.is_echec;
     is_mat = coup.is_mat;
@@ -65,7 +66,7 @@ ostream &operator<<(ostream &out, const Coup &coup)
     {
         if (coup.pieceJouee.type == "Pion")
         {
-            if (coup.isTaken)
+            if (coup.Taken != NULL)
             {
                 out << coup.oldPosition.second + 96;
             }
@@ -75,7 +76,7 @@ ostream &operator<<(ostream &out, const Coup &coup)
             out << coup.pieceJouee.type[0];
         }
 
-        if (coup.isTaken)
+        if (coup.Taken)
         {
             out << "x";
         }
@@ -159,26 +160,23 @@ bool is_coup_gagnant_TTT(const Echiquier &plateauRef, const Coup &dernierCoup)
                 if (r == 3)
                     return true;
             }
-            else
-            {
 
-                // diagonales grave
-                int s = 0;
-                int j = 3;
-                for (int i = 1; i <= 3; i++)
+            // diagonales grave
+            int s = 0;
+            int j = 3;
+            for (int i = 1; i <= 3; i++)
+            {
+                pair<int, int> coor(i, j);
+                plac = coor_to_pos(coor, taillep);
+                if (plateau[plac] != NULL)
                 {
-                    pair<int, int> coor(i, j);
-                    plac = coor_to_pos(coor, taillep);
-                    if (plateau[plac] != NULL)
-                    {
-                        if (plateau[plac]->isWhite == couleur)
-                            s++;
-                    }
-                    j -= 1;
+                    if (plateau[plac]->isWhite == couleur)
+                        s++;
                 }
-                if (s == 3)
-                    return true;
+                j -= 1;
             }
+            if (s == 3)
+                return true;
         }
     }
     return false;
@@ -217,16 +215,63 @@ ListeCoups *coupsPossiblesTTT(const Echiquier &plateau, bool isWhite, int num_to
             {
                 if (nbC == 0)
                 {
-                    first = new Coup(isWhite, Piece(isWhite, pair<int, int>(i, j)), pair<int, int>(i, j), pair<int, int>(0, 0), num_tour, false, false, NULL, NULL);
+                    first = new Coup(isWhite, Piece(isWhite), pair<int, int>(i, j), pair<int, int>(0, 0), num_tour, false, false, NULL, NULL);
                     prev = first;
                 }
                 else
                 {
-                    current = new Coup(isWhite, Piece(isWhite, pair<int, int>(i, j)), pair<int, int>(i, j), pair<int, int>(0, 0), num_tour, false, false, NULL, prev);
+                    current = new Coup(isWhite, Piece(isWhite), pair<int, int>(i, j), pair<int, int>(0, 0), num_tour, false, false, NULL, prev);
                     prev->Next = current;
                     prev = current;
                 }
                 nbC += 1;
+            }
+        }
+    }
+    ListeCoups *coupPossibles = new ListeCoups(nbC, first, current);
+    return coupPossibles;
+}
+
+ListeCoups *coupsPossibles(const Echiquier &plateau, bool isWhit, int num_tour)
+{
+    int nbC = 0;
+    int taillep = plateau.taille;
+    Coup *first = NULL;
+    Coup *current = NULL;
+    Coup *prev = NULL;
+
+    // on parcour le plateau
+    for (int i = 1; i <= taillep; i++)
+    {
+        for (int j = 1; j <= taillep; j++)
+        {
+            Piece *piece_a_jouer = plateau.plateau[coor_to_pos(pair<int, int>(i, j), taillep)];
+            if (piece_a_jouer->isWhite = isWhit)
+            {
+                // on parcourt ses déplacements possible, si il est légal on l'ajoute.
+                ListDeplac_rel dep_piece = piece_a_jouer->deplac_relatif;
+                Deplac_rel *dep_current = dep_piece.first;
+
+                while (dep_current != NULL)
+                {
+                    if (is_legal(plateau, piece_a_jouer, dep_current))
+                    {
+                        if (nbC == 0)
+                        {
+
+                            first = new Coup(isWhit, Piece(*piece_a_jouer), dep_current->coor + piece_a_jouer->position_coor, piece_a_jouer->position_coor, num_tour, taken_coup(plateau, piece_a_jouer, dep_current), is_Special(plateau, piece_a_jouer, dep_current), NULL, NULL, is_Echec(plateau, piece_a_jouer, dep_current, num_tour), is_Mat(plateau, piece_a_jouer, dep_current, num_tour));
+                            prev = first;
+                        }
+                        else
+                        {
+
+                            current = new Coup(isWhit, Piece(*piece_a_jouer), dep_current->coor + piece_a_jouer->position_coor, piece_a_jouer->position_coor, num_tour, taken_coup(plateau, piece_a_jouer, dep_current), is_Special(plateau, piece_a_jouer, dep_current), NULL, prev, is_Echec(plateau, piece_a_jouer, dep_current, num_tour), is_Mat(plateau, piece_a_jouer, dep_current, num_tour));
+                            prev->Next = current;
+                            prev = current;
+                        }
+                        nbC += 1;
+                    }
+                }
             }
         }
     }
@@ -274,7 +319,7 @@ void actualisePlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents)
         Piece piece = &(coup->pieceJouee);
         pair<int, int> old = coup->oldPosition;
         pair<int, int> news = coup->newPosition;
-        bool is_prise = coup->isTaken;
+        bool is_prise = (coup->Taken != NULL);
         Piece *new_piece = plateau.plateau[coor_to_pos(news, taillep)];
 
         if (taillep == 3) // si tictactoe
@@ -304,7 +349,7 @@ void actualisePlateau(Echiquier &plateau, const Coup &coupjoue)
     int taillep = plateau.taille;
     pair<int, int> old = coupjoue.oldPosition;
     pair<int, int> news = coupjoue.newPosition;
-    bool is_prise = coupjoue.isTaken;
+    bool is_prise = (coupjoue.Taken != NULL);
 
     if (taillep == 3) // si tictactoe
     {
@@ -312,7 +357,7 @@ void actualisePlateau(Echiquier &plateau, const Coup &coupjoue)
         new_piece->position_coor = news;
         plateau.plateau[coor_to_pos(news, taillep)] = new_piece;
     }
-    else // si echecs
+    else // si on joue aux echecs
     {
         Piece *old_piece = plateau.plateau[coor_to_pos(old, taillep)];
         Piece *new_piece = plateau.plateau[coor_to_pos(news, taillep)];
@@ -357,4 +402,177 @@ void resetPlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents)
 
         coup = coup->Prev;
     }
+}
+
+///
+// Autre
+/////
+
+bool is_legal(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current) // chiant
+{
+    int taillep = plateau.taille;
+    bool couleur_joueur = piece_a_jouer->isWhite;
+
+    // verifier si le déplacement est dans les déplacements de la pièce
+    bool is_in_list = false;
+    ListDeplac_rel dep_piece = piece_a_jouer->deplac_relatif;
+    Deplac_rel *dep_etudie = dep_piece.first;
+    while (dep_etudie != NULL)
+    {
+        if (dep_etudie->coor == dep_current->coor)
+            is_in_list = true;
+    }
+    if (!is_in_list)
+    {
+        cout << "ce déplacement n'est pas autorisé pour cette pièce";
+        return false;
+    }
+
+    // verifier si on sort du plateau
+    pair<int, int> old_place = piece_a_jouer->position_coor;
+    pair<int, int> new_place = old_place + dep_current->coor;
+    if (new_place.first < 1 || new_place.first >= taillep || new_place.second < 1 || new_place.second >= taillep)
+    {
+        cout << "ce déplacement sort du plateau";
+        return false;
+    }
+
+    // verifier si la case n'est pas déjà occupée par nous
+    if (plateau.plateau[coor_to_pos(new_place, taillep)]->isWhite == couleur_joueur)
+    {
+        cout << "cette case est occupée par l'une de vos pièce";
+        return false;
+    }
+
+    // verifiez si il y a une pièce le long du déplacement
+    if ((piece_a_jouer->type != "Cavalier") && (is_piece_entre(plateau, old_place, new_place)))
+        return false;
+
+    // si pion, verifier où il est
+
+    // verifier si on place notre propre roi en échec
+
+    return true;
+}
+
+bool is_piece_entre(const Echiquier &plateau, pair<int, int> place_depart, pair<int, int> place_arrive)
+{
+    int taillep = plateau.taille;
+    int roi_i = place_arrive.first;
+    int roi_j = place_arrive.second;
+    int ki = place_depart.first;
+    int kj = place_depart.second;
+
+    if (roi_i == ki)
+    {
+        for (int l = min(kj, roi_j) + 1; l <= max(kj, roi_j) - 1; l++)
+        {
+            if (plateau.plateau[coor_to_pos(pair<int, int>(ki, l), taillep)] != NULL)
+                return true;
+        }
+    }
+    else if (roi_j == kj)
+    {
+        for (int l = min(ki, roi_i) + 1; l <= max(ki, roi_i) - 1; l++)
+        {
+            if (plateau.plateau[coor_to_pos(pair<int, int>(kj, l), taillep)] != NULL)
+                return true;
+        }
+    }
+    else
+    {
+        int m = 1;
+        for (int l = min(kj, roi_j) + 1; l <= max(kj, roi_j) - 1; l++)
+        {
+            if (plateau.plateau[coor_to_pos(pair<int, int>(min(ki, roi_i) + m, l), taillep)] != NULL)
+                return true;
+            m += 1;
+        }
+    }
+    return true;
+}
+
+Piece *taken_coup(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current)
+{
+    if (!is_legal)
+        return false;
+    int taille = plateau.taille;
+    bool couleur_joueur = piece_a_jouer->isWhite;
+    pair<int, int> coor_arriver = piece_a_jouer->position_coor + dep_current->coor;
+    int place_arriver = coor_to_pos(coor_arriver, taille);
+    Piece *piece_arriver = plateau.plateau[place_arriver];
+    if (piece_arriver != NULL && piece_arriver->isWhite != couleur_joueur)
+    {
+        return piece_arriver;
+    }
+    return NULL;
+}
+
+bool is_Special(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current)
+{
+    return false;
+}
+
+bool is_Echec(const Echiquier &plateau, Piece *piece_a_joue, Deplac_rel *dep_current, int num_tour)
+{
+    if (!is_legal)
+    {
+        return false;
+    }
+    int taillep = plateau.taille;
+    Piece *piece_a_jouer = new Piece(piece_a_joue);
+    bool couleur_joueur = piece_a_jouer->isWhite;
+    pair<int, int> place_roi_ennemi = (couleur_joueur ? plateau.roi_blanc->position_coor : plateau.roi_noir->position_coor);
+
+    // on doit verifier si l'un des déplacement de la pièce menace le roi ennemi sans piece entre les deux et si une autre piece vient menacer le roi !
+    pair<int, int> new_position = piece_a_jouer->position_coor + dep_current->coor;
+
+    Echiquier plateau_copier = Echiquier(plateau);
+    Coup coup_jouee = Coup(couleur_joueur, piece_a_jouer, new_position, piece_a_jouer->position_coor, num_tour, taken_coup(plateau_copier, piece_a_jouer, dep_current), is_Special(plateau_copier, piece_a_jouer, dep_current), NULL, NULL, false, false); // a voir pour les deux derniers
+    actualisePlateau(plateau_copier, coup_jouee);
+
+    // on parcourt toutes les pièces du joueur
+    for (int i = 1; i <= taillep; i++)
+    {
+        for (int j = 1; i <= taillep; j++)
+        {
+            Piece *piece_a_jouer_bis = plateau_copier.plateau[coor_to_pos(pair<int, int>(i, j), taillep)];
+            if (piece_a_jouer_bis != NULL && piece_a_jouer_bis->isWhite == couleur_joueur)
+            {
+                ListDeplac_rel dep_rel = piece_a_jouer_bis->deplac_relatif;
+                Deplac_rel *dep_current_bis = dep_rel.first;
+                while (dep_current_bis != NULL)
+                {
+                    if ((place_roi_ennemi == (piece_a_jouer_bis->position_coor + dep_current_bis->coor)) && (is_legal(plateau_copier, piece_a_jouer, dep_current_bis)))
+                    {
+                        if (piece_a_jouer_bis->type == "Cavalier")
+                            return true;
+                        else if ((piece_a_jouer_bis->type == "Pion")) //&& (dep_current_bis->coor != pair<int, int>(1, 0)) ) inutile car le coup serait illégal
+                            return true;
+                        else // on doit tester si il y a une piece entre les deux
+                        {
+                            if (!is_piece_entre(plateau_copier, place_roi_ennemi, piece_a_jouer_bis->position_coor))
+                                return true;
+                        }
+                    }
+                    dep_current_bis = dep_current_bis->Next;
+                }
+            }
+        }
+    }
+    plateau_copier.~Echiquier();
+    return false;
+}
+
+bool is_Mat(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current)
+{
+    if (!is_legal)
+        return false;
+
+    // check si le roi peut bouger sans etre en échec
+
+    // check si une pièce peut se mettre devant
+
+    // check si on peut graille la pièce
+    return false;
 }

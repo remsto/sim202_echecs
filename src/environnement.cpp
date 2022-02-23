@@ -196,6 +196,12 @@ Piece::Piece() : TypePiece()
     position_coor = pair<int, int>(0, 0);
 }
 
+Piece::Piece(const Piece &piece_a_copier) : TypePiece(piece_a_copier.type)
+{
+    isWhite = piece_a_copier.isWhite;
+    position_coor = piece_a_copier.position_coor;
+}
+
 ostream &operator<<(ostream &out, const Piece &piece)
 {
     out << (piece.type[0]); // P ou D ou R ou ...
@@ -383,10 +389,12 @@ void mise_en_place_echec_piece(Echiquier &Echi)
     Piece *roi = new Piece(is_white, pair<int, int>(1, 5), "Roi");
     place = coor_to_pos(pair<int, int>(1, 5), taillep);
     Echi.plateau[place] = roi;
+    Echi.roi_blanc = roi;
 
     roi = new Piece(!is_white, pair<int, int>(8, 5), "Roi");
     place = coor_to_pos(pair<int, int>(8, 5), taillep);
     Echi.plateau[place] = roi;
+    Echi.roi_noir = roi;
 
     // dame
     Piece *Dame = new Piece(is_white, pair<int, int>(1, 4), "Dame");
@@ -396,4 +404,9 @@ void mise_en_place_echec_piece(Echiquier &Echi)
     Dame = new Piece(!is_white, pair<int, int>(8, 4), "Dame");
     place = coor_to_pos(pair<int, int>(8, 4), taillep);
     Echi.plateau[place] = Dame;
+}
+
+pair<int, int> operator+(pair<int, int> p1, pair<int, int> p2)
+{
+    return pair<int, int>(p1.first + p2.first, p1.second + p2.second);
 }

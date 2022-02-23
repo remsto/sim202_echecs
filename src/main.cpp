@@ -4,7 +4,7 @@ using namespace std;
 //#define cout std::cout
 #define taillepp 8
 
-int main2()
+int main()
 {
 
 	bool is_fini = false;
@@ -80,8 +80,6 @@ int main2()
 
 	while (num_tour < boucle_max && !is_fini)
 	{
-		num_tour += 1; // a enlever a terme
-
 		// a qui est-ce de jouer ?
 		if (is_tour_joueur1)
 		{
@@ -92,6 +90,12 @@ int main2()
 		{
 			joueur_courant = joueur2;
 			is_white_courant = (!is_white_1);
+		}
+
+		// num_tour
+		if (is_white_courant)
+		{
+			num_tour += 1;
 		}
 
 		// c'est à l'humain de jouer, choix du coup !
@@ -149,7 +153,7 @@ int main2()
 		// C'est à l'ordi aléatoire de jouer, , choix du coup !
 		else if (joueur_courant == 2)
 		{
-			coupjoue = coup_aleatoire_TTT(*Echi, is_white_courant, num_tour);
+			coupjoue = coup_aleatoire_echecs(*Echi, is_white_courant, num_tour);
 			cout << "Le coup est : " << *coupjoue << "\n";
 		}
 

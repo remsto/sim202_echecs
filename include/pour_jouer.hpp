@@ -11,14 +11,14 @@
 class Coup
 {
 public:
-    Coup(bool isW, const Piece &pieceJ, pair<int, int> newP, pair<int, int> oldP, int num_tour_de_jeu = 0, bool isTaken = false, bool isSpecial = false, Coup *Next = NULL, Coup *Prev = NULL, bool is_echec = false, bool is_mat = false);
+    Coup(bool isW, const Piece &pieceJ, pair<int, int> newP, pair<int, int> oldP, int num_tour_de_jeu = 0, Piece *taken = NULL, bool isSpecial = false, Coup *Next = NULL, Coup *Prev = NULL, bool is_echec = false, bool is_mat = false);
     Coup(const Coup &coup);
     bool isWhite;
     Piece pieceJouee;
     // convention : 1 à N, (0,0)=hors plateau
     pair<int, int> oldPosition;
     pair<int, int> newPosition;
-    bool isTaken;
+    Piece *Taken;
     bool isSpecial;
     Coup *Next;
     Coup *Prev;
@@ -50,6 +50,7 @@ public:
 void addCoup(ListeCoups *L, const Coup &C);
 
 ListeCoups *coupsPossiblesTTT(const Echiquier &plateau, bool isWhite, int num_tour);
+ListeCoups *coupsPossibles(const Echiquier &plateau, bool isWhite, int num_tour);
 
 ///////
 ////MAJ plateau
@@ -59,5 +60,20 @@ void actualisePlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents);
 void actualisePlateau(Echiquier &plateau, const Coup &coupjoue);
 
 void resetPlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents);
+
+/////
+// Autre
+/////
+
+bool is_legal(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current);
+
+Piece *taken_coup(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current);
+
+bool is_Special(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current);
+
+// est ce qu'on met en echec le roi ennemi
+bool is_Echec(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current, int num_tour); // s'il met en echec le roi ennemi !
+
+bool is_Mat(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current, int num_tour); // le coup met mat le roi ennemi
 
 #endif

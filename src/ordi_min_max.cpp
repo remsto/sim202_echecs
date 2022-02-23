@@ -6,13 +6,14 @@ using namespace std;
 // POSITION
 ////
 
-Position::Position(Echiquier &plateau, ListeCoups &coups, Position *positionSoeur, Position *positionFille, bool joueurCoup)
+Position::Position(Echiquier &plateau, ListeCoups &coups, Position *positionSoeur, Position *positionFille, bool joueurCoup, int num_tour)
 {
     plateauRef = plateau;
     joueur = joueurCoup;
     soeur = positionSoeur;
     fille = positionFille;
     coupsPrecedents = coups;
+    num_tour_de_jeu = num_tour;
 }
 
 Position::~Position() // a faire
@@ -32,27 +33,28 @@ Position::~Position() // a faire
 // pour TTT a cause de coups possibles
 void Position::generateur(int profondeur)
 {
+
     if (profondeur != 0)
     {
         actualisePlateau(plateauRef, coupsPrecedents);
-        ListeCoups *coupsPossibles = coupsPossiblesTTT(plateauRef, joueur); // regrouper avec valeur dans une méthode?
+        ListeCoups *coupsPossibles = coupsPossiblesTTT(plateauRef, joueur, num_tour_de_jeu + 1); // regrouper avec valeur dans une méthode?
         resetPlateau(plateauRef, coupsPrecedents);
 
         // CREATION 1ere FILLE
         // copie coupsPrecedents
         ListeCoups coupsPrecedentsCurrent(coupsPrecedents);
         // Le 1er coupPossible devient le dernier coupPrecedent
-        (coupsPrecedentsCurrent.last)->Next = coupsPossibles.first;
-        coupsPrecedentsCurrent.last = (coupsPrecedentsPrec.last)->Next;
+        (coupsPrecedentsCurrent.last)->Next = coupsPossibles->first;
+        coupsPrecedentsCurrent.last = coupsPossibles->first;
         coupsPrecedentsCurrent.nbCoups++;
 
-        this->fille = new Position(plateauRef, coupsPrecedentsCurrent, NULL, NULL, !joueur);
+        this->fille = new Position(plateauRef, coupsPrecedentsCurrent, NULL, NULL, !joueur, num_tour_de_jeu + 1);
         Position *current = this->fille;
 
-        for (int i = 0; i < coupsPossibles.nbCoups; i++)
-        {   // maj coupsPossibles
-            coupsPossibles.first = (coupsPossibles.first)->Next;
-            coupsPossibles.nbCoups = coupsPossibles.nbCoups - 1;
+        for (int i = 0; i < coupsPossibles->nbCoups; i++)
+        { // maj coupsPossibles
+            coupsPossibles->first = (coupsPossibles->first)->Next;
+            coupsPossibles->nbCoups = coupsPossibles->nbCoups - 1;
 
             // cps = this.cp
             ListeCoups coupsPrecedentsSoeur(coupsPrecedents);
@@ -64,14 +66,13 @@ void Position::generateur(int profondeur)
             coupsPrecedentsSoeur.nbCoups++;
 
             // CREATION SOEUR
-            current->soeur = new Position(plateauRef, coupsPrecedentsSoeur, NULL, NULL, !joueur);
-            
+            current->soeur = new Position(plateauRef, coupsPrecedentsSoeur, NULL, NULL, !joueur, num_tour_de_jeu + 1);
+
             // Passer à la suivante
             current = current->soeur;
 
             // Appeler récursion sur current
             current->generateur(profondeur - 1);
-
         }
     }
 }

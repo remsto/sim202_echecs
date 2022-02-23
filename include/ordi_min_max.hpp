@@ -20,8 +20,9 @@ public:
     Position *soeur;
     Position *fille;
     bool joueur; // qui a joué le prochain coup =is white ?
+    int num_tour_de_jeu;
 
-    Position(Echiquier &plateau, ListeCoups &coups, Position *positionSoeur, Position *positionFille, bool joueurCoup);
+    Position(Echiquier &plateau, ListeCoups &coups, Position *positionSoeur, Position *positionFille, bool joueurCoup, int num_tour);
     bool estGagnante();
     int calculeValeurPosition();
     void generateur(int profondeur);

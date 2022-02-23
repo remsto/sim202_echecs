@@ -4,7 +4,7 @@ using namespace std;
 //#define cout std::cout
 #define taillepp 3
 
-int main()
+int main2()
 {
 
     bool is_fini = false;
@@ -75,7 +75,6 @@ int main()
 
     while (num_tour < boucle_max && !is_fini)
     {
-        num_tour += 1;
 
         // a qui est-ce de jouer ?
         if (is_tour_joueur1)
@@ -87,6 +86,12 @@ int main()
         {
             joueur_courant = joueur2;
             is_white_courant = (!is_white_1);
+        }
+
+        // num_tour
+        if (is_white_courant)
+        {
+            num_tour += 1;
         }
 
         // c'est à l'humain de jouer, choix du coup !
@@ -172,13 +177,14 @@ int main()
         }
         else
         {
-            if (num_tour != boucle_max)
+            if ((num_tour < 5))
             {
                 cout << "Pas de Victoire, on continue ! \n";
             }
             else
             {
                 cout << "Egalité !\n";
+                is_fini = true;
             }
         }
         is_tour_joueur1 = (!(is_tour_joueur1));
