@@ -60,19 +60,20 @@ void actualisePlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents);
 void actualisePlateau(Echiquier &plateau, const Coup &coupjoue);
 
 void resetPlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents);
+void resetPlateau(Echiquier &plateau, const ListeCoups &coup_jouee);
 
 /////
 // Autre
 /////
 
-bool is_legal(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current);
+bool is_legal(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current, int num_tour);
 
 Piece *taken_coup(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current);
 
 bool is_Special(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current);
 
 // est ce qu'on met en echec le roi ennemi
-bool is_Echec(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current, int num_tour); // s'il met en echec le roi ennemi !
+bool is_Echec(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current, int num_tour, bool couleur_roi_en_echec); // s'il met en echec le roi ennemi !
 
 bool is_Mat(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current, int num_tour); // le coup met mat le roi ennemi
 

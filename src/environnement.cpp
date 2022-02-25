@@ -75,8 +75,12 @@ TypePiece::TypePiece(string typee)
         Deplac_rel *dep_pion2 = new Deplac_rel(pair<int, int>(1, 1), dep_pion1);
         Deplac_rel *dep_pion3 = new Deplac_rel(pair<int, int>(1, -1), dep_pion2);
         Deplac_rel *dep_pion4 = new Deplac_rel(pair<int, int>(2, 0), dep_pion3);
+        Deplac_rel *dep_pion5 = new Deplac_rel(pair<int, int>(-1, 0), dep_pion4);
+        Deplac_rel *dep_pion6 = new Deplac_rel(pair<int, int>(-1, -1), dep_pion5);
+        Deplac_rel *dep_pion7 = new Deplac_rel(pair<int, int>(-1, 1), dep_pion6);
+        Deplac_rel *dep_pion8 = new Deplac_rel(pair<int, int>(-2, 0), dep_pion7);
 
-        deplac_relatif = ListDeplac_rel(4, dep_pion4, dep_pion1);
+        deplac_relatif = ListDeplac_rel(8, dep_pion8, dep_pion1);
     }
     else if (type == "Tour")
     {

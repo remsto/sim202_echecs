@@ -13,10 +13,6 @@ int main()
 	int num_tour = 0;
 	int boucle_max = 1000; // a enlever à terme
 
-	int ligne;
-	char colonne_char;
-	int colonne; // pour entrer où jouer
-
 	bool is_coups_correct;
 	int joueur_courant;
 	bool is_tour_joueur1;
@@ -115,12 +111,21 @@ int main()
 
 			is_coups_correct = false;
 			cout << "où jouer ? \n";
+
+			string case_depart;
+			string case_arrive;
+
+			char colonne_char;
+			int colonne; // pour entrer où jouer
+
 			while (!is_coups_correct)
 			{
-				cout << "Entrez la ligne :";
-				cin >> ligne;
-				cout << "Entrez la colonne :";
-				cin >> colonne_char; // conversion
+				cout << "Entre la case de départ (ex : 'b2') :";
+				cin >> case_depart;
+				cout << "Entrez la case d'arrivée :";
+				cin >> case_arrive;
+
+				// conversion
 				colonne = colonne_char - 96;
 				// verifiez conformité
 				if (ligne > taillep || ligne <= 0)
