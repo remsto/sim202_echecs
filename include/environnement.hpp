@@ -49,9 +49,8 @@ public:
     bool isWhite; // white=rond
     pair<int, int> position_coor;
 
-    Piece(bool isWhit, pair<int, int> coor = pair<int, int>(0, 0), string type = "Pion");
+    Piece(bool isWhit = true, pair<int, int> coor = pair<int, int>(0, 0), string type = "Pion");
     Piece(const Piece &piece_a_copier);
-    Piece();
 };
 ostream &operator<<(ostream &out, const Piece &piece);
 
@@ -85,5 +84,5 @@ int tirage_alea_entier(int min, int max);
 
 void mise_en_place_echec_piece(Echiquier &EchiTTT);
 pair<int, int> operator+(pair<int, int> p1, pair<int, int> p2);
-
+pair<int, int> operator-(pair<int, int> p1, pair<int, int> p2);
 #endif

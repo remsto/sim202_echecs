@@ -19,7 +19,7 @@ Coup *coup_aleatoire_TTT(const Echiquier &Echi, bool is_white, int num_tour)
     return a_retourner;
 }
 
-Coup *coup_aleatoire_echecs(const Echiquier &Echi, bool is_white, int num_tour)
+Coup *coup_aleatoire_echecs(Echiquier &Echi, bool is_white, int num_tour)
 {
     ListeCoups *Liste_possible = coupsPossibles(Echi, is_white, num_tour);
     int nbc = Liste_possible->nbCoups;

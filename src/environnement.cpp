@@ -19,6 +19,18 @@ pour info :
 1| 0 | 1 | 2 |
    1   2   3
    A   B   C
+
+
+2| 3 | 4 | 5 | 3 | 4 | 5 | 3 | 4 |
+1| 0 | 1 | 2 | 3 | 4 | 5 | 3 | 4 |
+3| 6 | 7 | 8 | 3 | 4 | 5 | 3 | 4 |
+2| 3 | 4 | 5 | 3 | 4 | 5 | 3 | 4 |
+1| 0 | 1 | 2 | 3 | 28| 5 | 3 | 4 |
+3| 6 | 7 | 8 | 3 | 20| 5 | 3 | 4 |
+2| 8 | 9 | 10| 11| 12| 5 | 3 | 4 |
+1| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+   1   2   3
+   A   B   C   D   E   F   G   H
 */
 
 // class Deplac_rel et ListDeplac_rel
@@ -117,7 +129,7 @@ TypePiece::TypePiece(string typee)
         deplac_relatif = ListDeplac_rel(8, dep_cavalier8, dep_cavalier1);
     }
 
-    else if (type == string("Fou"))
+    else if (type == "Fou")
     {
         valeur = 3;
 
@@ -192,12 +204,6 @@ Piece::Piece(bool isWhit, pair<int, int> coor, string type) : TypePiece(type)
 {
     isWhite = isWhit;
     position_coor = coor;
-}
-
-Piece::Piece() : TypePiece()
-{
-    isWhite = true;
-    position_coor = pair<int, int>(0, 0);
 }
 
 Piece::Piece(const Piece &piece_a_copier) : TypePiece(piece_a_copier.type)
@@ -289,7 +295,8 @@ int coor_to_pos(pair<int, int> p, int taillep)
     return n;
 }
 
-pair<int, int> pos_to_coor(int n, int taillep)
+pair<int, int>
+pos_to_coor(int n, int taillep)
 {
     pair<int, int> p((n / taillep) + 1, (n % taillep) + 1);
     return p;
@@ -413,4 +420,8 @@ void mise_en_place_echec_piece(Echiquier &Echi)
 pair<int, int> operator+(pair<int, int> p1, pair<int, int> p2)
 {
     return pair<int, int>(p1.first + p2.first, p1.second + p2.second);
+}
+pair<int, int> operator-(pair<int, int> p1, pair<int, int> p2)
+{
+    return pair<int, int>(p1.first - p2.first, p1.second - p2.second);
 }

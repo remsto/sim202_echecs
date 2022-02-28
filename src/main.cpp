@@ -18,10 +18,10 @@ int main()
 	bool is_tour_joueur1;
 	bool is_white_1;
 	bool is_white_courant;
-	pair<int, int> p;
 
 	Coup *coupjoue;
 	Piece *piece_jouee;
+	Deplac_rel *dep;
 
 	ListeCoups *historique_coups = new ListeCoups();
 
@@ -114,48 +114,60 @@ int main()
 
 			string case_depart;
 			string case_arrive;
-
-			char colonne_char;
-			int colonne; // pour entrer où jouer
+			pair<int, int> case_dep;
+			pair<int, int> case_arr;
 
 			while (!is_coups_correct)
 			{
-				cout << "Entre la case de départ (ex : 'b2') :";
+				cout << "Entrez la case de départ (ex : 'b2') :";
 				cin >> case_depart;
 				cout << "Entrez la case d'arrivée :";
 				cin >> case_arrive;
 
-				// conversion
-				colonne = colonne_char - 96;
-				// verifiez conformité
-				if (ligne > taillep || ligne <= 0)
-				{
-					cout << "la ligne ne conviennt pas, recommencez \n";
-				}
-				else if (colonne > taillep || colonne <= 0)
-				{
-					cout << "la colonne ne convient pas, recommencez \n";
-				}
+				if ((case_depart.length() != 2) || (case_arrive.length() != 2))
+					cout << "Les formats de cases ne correspondent pas à la longueur souhaitée. \n";
 				else
 				{
-					p = pair<int, int>(ligne, colonne);
-					if (Echi->plateau[coor_to_pos(p, taillep)] != NULL)
-					{
-						cout << "la case est déjà occupée, recommencez\n";
-					}
+					int ligne_depart = case_depart[1] - 48;
+					int ligne_arrivee = case_arrive[1] - 48;
+					int colonne_depart = case_depart[0] - 96;
+					int colonne_arrivee = case_arrive[0] - 96;
+
+					if ((ligne_depart < 1) || (ligne_depart > taillep) || (ligne_arrivee < 1) || (ligne_arrivee > taillep) || (colonne_depart < 1) || (colonne_depart > taillep) || (colonne_arrivee < 1) || (colonne_arrivee > taillep))
+						cout << "l'une des cases entrées n'existe pas. \n";
 					else
 					{
-						is_coups_correct = true;
+						case_dep = pair<int, int>(ligne_depart, colonne_depart);
+						case_arr = pair<int, int>(ligne_arrivee, colonne_arrivee);
+						dep = new Deplac_rel(case_arr - case_dep);
+						piece_jouee = Echi->plateau[coor_to_pos(case_dep, taillep)];
+						if ((piece_jouee == NULL) || (piece_jouee->isWhite != is_white_courant)) // traiter cas 2 dans is_legal
+							cout << "La case de départ ne correspond pas à l'une de vos pièces. \n";
+						else if (!is_legal(*Echi, piece_jouee, dep, num_tour))
+							cout << "Ce coup n'est pas légal.\n";
+						else
+						{
+							cout << "Le coup est correct.\n";
+							is_coups_correct = true;
+						}
 					}
 				}
 			}
 
-			piece_jouee = new Piece(is_white_courant);
-			coupjoue = new Coup(is_white_courant, *piece_jouee, p, piece_jouee->position_coor, num_tour);
+			Piece *piece_prise = taken_coup(*Echi, piece_jouee, dep, num_tour);
+			// cout << "piece prise ok\n";
+			bool is_spe = is_Special(*Echi, piece_jouee, dep);
+			// cout << is_spe << endl;
+			bool is_ech = is_Echec(*Echi, piece_jouee, dep, num_tour, !is_white_courant);
+			// cout << is_ech << endl;
+			bool is_ma = is_Mat(*Echi, piece_jouee, dep, num_tour);
+			// cout << is_ma << endl;
+			coupjoue = new Coup(is_white_courant, piece_jouee, case_arr, case_dep, num_tour, piece_prise, is_spe, NULL, NULL, is_ech, is_ma);
+			cout << *piece_jouee << endl;
 			cout << "Le coup est : " << *coupjoue << "\n";
 		}
 
-		// C'est à l'ordi aléatoire de jouer, , choix du coup !
+		//  C'est à l'ordi aléatoire de jouer, , choix du coup !
 		else if (joueur_courant == 2)
 		{
 			coupjoue = coup_aleatoire_echecs(*Echi, is_white_courant, num_tour);
@@ -178,21 +190,27 @@ int main()
 		actualisePlateau(*Echi, *coupjoue);
 		cout << "Voici le déplacement effectué : \n";
 		Echi->affiche();
-		addCoup(historique_coups, *coupjoue);
-		is_fini = is_coup_gagnant_TTT(*Echi, *coupjoue);
+		addCoup(historique_coups, coupjoue);
+
+		is_fini = coupjoue->is_mat;
+
 		if (is_fini)
 		{
-			cout << "Victoire";
+			cout << "BRAVO ! Victoire du joueur ";
+			cout << (is_white_courant ? "Blanc." : "Noir.");
+			cout << endl
+				 << "Voici un récapitulatif de la partie : \n";
+			cout << *historique_coups;
 		}
 		else
 		{
 			if (num_tour != boucle_max)
 			{
-				cout << "Pas de Victoire, on continue ! \n";
+				cout << "On continue ! \n";
 			}
 			else
 			{
-				cout << "Egalité !\n";
+				cout << "nombre de boucle max atteint !\n";
 			}
 		}
 		is_tour_joueur1 = (!(is_tour_joueur1));

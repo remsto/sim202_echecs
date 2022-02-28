@@ -47,10 +47,12 @@ public:
     ListeCoups();
 };
 
-void addCoup(ListeCoups *L, const Coup &C);
+ostream &operator<<(ostream &out, const ListeCoups &Listcoup);
+
+void addCoup(ListeCoups *L, Coup *C);
 
 ListeCoups *coupsPossiblesTTT(const Echiquier &plateau, bool isWhite, int num_tour);
-ListeCoups *coupsPossibles(const Echiquier &plateau, bool isWhite, int num_tour);
+ListeCoups *coupsPossibles(Echiquier &plateau, bool isWhite, int num_tour);
 
 ///////
 ////MAJ plateau
@@ -66,15 +68,16 @@ void resetPlateau(Echiquier &plateau, const ListeCoups &coup_jouee);
 // Autre
 /////
 
-bool is_legal(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current, int num_tour);
+bool is_legal(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current, int num_tour);
+bool is_piece_entre(const Echiquier &plateau, pair<int, int> place_depart, pair<int, int> place_arrive);
 
-Piece *taken_coup(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current);
+Piece *taken_coup(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current, int num_tour);
 
 bool is_Special(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current);
 
-// est ce qu'on met en echec le roi ennemi
-bool is_Echec(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current, int num_tour, bool couleur_roi_en_echec); // s'il met en echec le roi ennemi !
+// est ce qu'on met en echec le roi ennemi ou le notre
+bool is_Echec(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current, int num_tour, bool couleur_roi_en_echec); // s'il met en echec le roi ennemi !
 
-bool is_Mat(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current, int num_tour); // le coup met mat le roi ennemi
+bool is_Mat(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current, int num_tour); // le coup met mat le roi ennemi
 
 #endif

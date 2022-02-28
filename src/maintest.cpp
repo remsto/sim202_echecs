@@ -1,16 +1,13 @@
-#include "environnement.hpp"
+
+#include "ordi_aleatoire.hpp"
 #include <iostream>
 #include <random>
 using namespace std;
+#define taillepp 8
 
 int main1()
 {
-
-    Piece *test = new Piece(true, pair<int, int>(0, 0), "Pion");
-    string a = test->type;
-    cout << "type : " << a;
-    char b = (test->type).at(0);
-    cout << "premiere lettre : " << b;
-    char c = (test->type)[0];
-    cout << " " << c;
+    Piece *piec_test = new Piece(true, pair<int, int>(1, 1), "Cavalier");
+    char premiere_lettre = piec_test->type[0];
+    cout << premiere_lettre;
 }

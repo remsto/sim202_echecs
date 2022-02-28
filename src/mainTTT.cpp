@@ -150,7 +150,7 @@ int main2()
         else if (joueur_courant == 2)
         {
             coupjoue = coup_aleatoire_TTT(*EchiTTT, is_white_courant, num_tour);
-            cout << "Le coup est : " << *coupjoue << "\n";
+            cout << "Au tour " << num_tour << ", le coup du joueur " << (is_white_courant ? "blanc" : "noir") << " est : " << *coupjoue << endl;
         }
 
         // C'est à l'ordi min_max de profondeur ?? de jouer,, choix du coup !
@@ -169,7 +169,7 @@ int main2()
         actualisePlateau(*EchiTTT, *coupjoue);
         cout << "Voici le déplacement effectué : \n";
         EchiTTT->affiche();
-        addCoup(historique_coups, *coupjoue);
+        addCoup(historique_coups, coupjoue);
         is_fini = is_coup_gagnant_TTT(*EchiTTT, *coupjoue);
         if (is_fini)
         {
