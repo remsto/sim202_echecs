@@ -4,7 +4,7 @@ using namespace std;
 //#define cout std::cout
 #define taillepp 3
 
-int main2()
+int main()
 {
 
     bool is_fini = false;
@@ -156,6 +156,7 @@ int main2()
         // C'est à l'ordi min_max de profondeur ?? de jouer,, choix du coup !
         else if (joueur_courant == 3)
         {
+            
         }
 
         else
