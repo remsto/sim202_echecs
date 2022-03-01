@@ -38,7 +38,7 @@ void Position::generateur(int profondeur)
     {
         actualisePlateau(plateauRef, coupsPrecedents);
         //actualise valeur de 1ere soeur
-        this.set_valeur(); // à coder pour les échecs
+        this->set_valeur(); // à coder pour les échecs
         ListeCoups *coupsPossibles = coupsPossiblesTTT(plateauRef, joueur, num_tour_de_jeu + 1); 
     
         resetPlateau(plateauRef, coupsPrecedents);
@@ -76,7 +76,7 @@ void Position::generateur(int profondeur)
             current = current->soeur;
 
             //set la valeur soeur
-            set_valeur(current);
+            (*current).set_valeur();
 
             // Appeler récursion sur current
             current->generateur(profondeur - 1);
@@ -129,16 +129,16 @@ Coup coup_min_max(Position position, int profondeur){
     position.generateur(profondeur); //je ne sais pas appeler cette méthode
     MinMax(position); // à coder
     Position *current = position.fille;
-    Coup coup = (current->coupsPrecedents).last;
+    Coup coup = *(current->coupsPrecedents).last;
     while(current->soeur != NULL){ // Parcours de la génération fille
         if(position.joueur){
             if(current->valeurMinMax > (current->soeur)->valeurMinMax){
-                coup = ((current->soeur)->coupsPrecedents).last;
+                coup = *((current->soeur)->coupsPrecedents).last;
             }
         }
         else{
             if(current->valeurMinMax < (current->soeur)->valeurMinMax){
-                coup = ((current->soeur)->coupsPrecedents).last;
+                coup = *((current->soeur)->coupsPrecedents).last;
             }
         }
         current = current->soeur;
@@ -154,7 +154,7 @@ void MinMax(Position position){
     else{
         // Si le joueur est le joueur en train de jouer
         
-        Position *current = position->fille; 
+        Position *current = position.fille; 
         MinMax(*current);
         int temp = current->valeurMinMax;
         while(current->soeur != NULL){
