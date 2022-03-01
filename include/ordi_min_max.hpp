@@ -16,7 +16,8 @@ class Position
 public:
     Echiquier plateauRef;
     ListeCoups coupsPrecedents;
-    int valeurPosition = 0; // attribut, à iniialiser avec valeurPosition()
+    int valeurPosition = 0; // attribut, à iniialiser avec set_valeur()
+    int valeurMinMax;
     Position *soeur;
     Position *fille;
     bool joueur; // qui a joué le prochain coup =is white ?
@@ -24,9 +25,10 @@ public:
 
     Position(Echiquier &plateau, ListeCoups &coups, Position *positionSoeur, Position *positionFille, bool joueurCoup, int num_tour);
     bool estGagnante();
-    int calculeValeurPosition();
+    int set_valeur();
     void generateur(int profondeur);
     ~Position();
 };
+
 
 #endif
