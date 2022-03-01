@@ -127,7 +127,7 @@ bool Position::estGagnante()
 Coup* coup_min_max(Position position, int profondeur){
     // ARRANGER LES "." ET "->", COMPLETEMENT HASARDEUX
     position.generateur(profondeur); //je ne sais pas appeler cette méthode
-    position.MinMax(); // à coder
+    position.MinMax(position.joueur); // à coder
     Position *current = position.fille;
     Coup coup = *(current->coupsPrecedents).last;
     while(current->soeur != NULL){ // Parcours de la génération fille
@@ -155,11 +155,11 @@ void Position::MinMax(bool is_white_current){
         // Si le joueur est le joueur en train de jouer
         
         Position *current = this->fille; 
-        current->MinMax();
+        current->MinMax(is_white_current);
         int temp = current->valeurMinMax;
         while(current->soeur != NULL){
             current = current->soeur;
-            current->MinMax();
+            current->MinMax(is_white_current);
             
             if(this->joueur==is_white_current){
                 // Si le joueur du noeud est celui qui joue, MAX  
