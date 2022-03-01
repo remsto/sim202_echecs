@@ -156,7 +156,10 @@ int main()
         // C'est à l'ordi min_max de profondeur ?? de jouer,, choix du coup !
         else if (joueur_courant == 3)
         {
-            
+            int profondeur = 2;
+            Position position = Position(EchiTTT, NULL, NULL, NULL, is_white_courant, num_tour);
+            coupjoue = coup_min_max(position, profondeur);
+            cout << "Au tour " << num_tour << ", le coup du joueur " << (is_white_courant ? "blanc" : "noir") << " est : " << *coupjoue << endl;
         }
 
         else
