@@ -30,5 +30,7 @@ public:
     ~Position();
 };
 
+void MinMax(Position position);
+
 
 #endif
