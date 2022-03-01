@@ -170,6 +170,17 @@ int main()
 		//  C'est à l'ordi aléatoire de jouer, , choix du coup !
 		else if (joueur_courant == 2)
 		{
+			cout << "C'est au tour des ";
+			if (is_white_courant)
+			{
+				cout << "Blancs.";
+			}
+			else
+			{
+				cout << "Noirs.";
+			}
+			cout << " Voici le plateau : \n";
+			Echi->affiche();
 			coupjoue = coup_aleatoire_echecs(*Echi, is_white_courant, num_tour);
 			cout << "Le coup est : " << *coupjoue << "\n";
 		}

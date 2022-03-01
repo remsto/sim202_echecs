@@ -158,12 +158,12 @@ TypePiece::TypePiece(string typee)
         Deplac_rel *dep_roi4 = new Deplac_rel(pair<int, int>(1, 0), dep_roi3);
         Deplac_rel *dep_roi5 = new Deplac_rel(pair<int, int>(-1, 0), dep_roi4);
         Deplac_rel *dep_roi6 = new Deplac_rel(pair<int, int>(-1, 1), dep_roi5);
-        Deplac_rel *dep_roi7 = new Deplac_rel(pair<int, int>(0, -1), dep_roi6);
+        Deplac_rel *dep_roi7 = new Deplac_rel(pair<int, int>(0, 1), dep_roi6);
         Deplac_rel *dep_roi8 = new Deplac_rel(pair<int, int>(1, 1), dep_roi7);
-        Deplac_rel *dep_roi9 = new Deplac_rel(pair<int, int>(0, -3), dep_roi8); // pour roquer, a reflechir
-        Deplac_rel *dep_roi10 = new Deplac_rel(pair<int, int>(0, 2), dep_roi9); // pour roquer, a reflechir
+        // Deplac_rel *dep_roi9 = new Deplac_rel(pair<int, int>(0, -3), dep_roi8); // pour roquer, a reflechir
+        // Deplac_rel *dep_roi10 = new Deplac_rel(pair<int, int>(0, 2), dep_roi9); // pour roquer, a reflechir
 
-        deplac_relatif = ListDeplac_rel(10, dep_roi10, dep_roi1);
+        deplac_relatif = ListDeplac_rel(8, dep_roi8, dep_roi1);
     }
     else if (type == "Dame")
     {

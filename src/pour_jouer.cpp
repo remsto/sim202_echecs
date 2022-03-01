@@ -503,45 +503,48 @@ bool is_legal(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current,
         // s'il avance tout droit, il ne faut pas de pièce à l'arrivée
         if (((dep_current->coor == pair<int, int>(1, 0)) || (dep_current->coor == pair<int, int>(-1, 0)) || (dep_current->coor == pair<int, int>(2, 0)) || (dep_current->coor == pair<int, int>(-2, 0))) && (plateau.plateau[coor_to_pos(new_place, taillep)] != NULL))
         {
-            cout << "Le pion qui va tout droit ne peut pas manger";
+            cout << "Le pion qui va tout droit ne peut pas manger\n";
             return false;
         }
 
         // s'il avance en digonale c'est qu'il mange une pièce
         if (((dep_current->coor == pair<int, int>(1, 1)) || (dep_current->coor == pair<int, int>(1, -1)) || (dep_current->coor == pair<int, int>(-1, 1)) || (dep_current->coor == pair<int, int>(-1, -1))) && ((plateau.plateau[coor_to_pos(new_place, taillep)] == NULL) || (plateau.plateau[coor_to_pos(new_place, taillep)]->isWhite == couleur_joueur)))
         {
-            cout << "Le pion qui va tout droit ne peut pas manger";
+            cout << "Le pion qui va tout droit ne peut pas manger\n";
             return false;
         }
 
         // il ne peut pas avancer de deux pas sauf au début
         if ((dep_current->coor == pair<int, int>(2, 0)) && (old_place.first != 2))
         {
-            cout << "On ne peut avancer de deux cases sauf au premier coup";
+            cout << "On ne peut avancer de deux cases sauf au premier coup\n";
             return false;
         }
         if ((dep_current->coor == pair<int, int>(-2, 0)) && (old_place.first != 7))
         {
-            cout << "On ne peut avancer de deux cases sauf au premier coup";
+            cout << "On ne peut avancer de deux cases sauf au premier coup\n";
             return false;
         }
         // le pion a un sens impose
         if ((couleur_joueur == true) && ((dep_current->coor == pair<int, int>(-2, 0)) || (dep_current->coor == pair<int, int>(-1, 0)) || (dep_current->coor == pair<int, int>(-1, 1)) || (dep_current->coor == pair<int, int>(-1, -1))))
         {
-            cout << "On ne peut pas reculer";
+            cout << "On ne peut pas reculer\n";
             return false;
         }
         if ((couleur_joueur == false) && ((dep_current->coor == pair<int, int>(2, 0)) || (dep_current->coor == pair<int, int>(1, 0)) || (dep_current->coor == pair<int, int>(1, 1)) || (dep_current->coor == pair<int, int>(1, -1))))
         {
-            cout << "On ne peut pas reculer";
+            cout << "On ne peut pas reculer\n";
             return false;
         }
+    }
+    if (piece_a_jouer->type == "Roi")
+    {
     }
 
     // verifier si on place notre propre roi en échec
     if (is_Echec(plateau, piece_a_jouer, dep_current, num_tour, couleur_joueur))
     {
-        cout << "Ce déplacement placerait votre roi en échec";
+        cout << "Ce déplacement placerait votre roi en échec.\n";
         return false;
     }
 
@@ -644,6 +647,7 @@ bool is_Echec(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current,
                     if ((place_roi_ennemi == (piece_a_jouer_bis->position_coor + dep_current_bis->coor)) && (is_legal(plateau, piece_a_jouer_bis, dep_current_bis, num_tour)))
                     {
                         resetPlateau(plateau, coup_jouee);
+                        cout << "la piece mettant en echec est : " << *piece_a_jouer_bis << " en se déplacant ainsi " << *dep_current_bis << "a partir de " << piece_a_jouer_bis->position_coor << endl;
                         return true;
                     }
                     dep_current_bis = dep_current_bis->Next;
@@ -670,7 +674,7 @@ bool is_Mat(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current, i
 
     Coup coup_jouee = Coup(couleur_joueur, piece_a_jouer, new_position, piece_a_jouer->position_coor, num_tour, taken_coup(plateau, piece_a_jouer, dep_current, num_tour), is_Special(plateau, piece_a_jouer, dep_current), NULL, NULL, false, false); // a voir pour les deux derniers
     actualisePlateau(plateau, coup_jouee);
-    plateau.affiche();
+    // plateau.affiche();
 
     // TOUT CA SE FAIT EN UNE BOUCLE
     //  check si le roi peut bouger sans etre ensuite en echec
