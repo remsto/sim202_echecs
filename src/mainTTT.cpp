@@ -1,6 +1,7 @@
 #include <iostream>
 using namespace std;
 #include "ordi_aleatoire.hpp"
+#include "ordi_min_max.hpp"
 //#define cout std::cout
 #define taillepp 3
 
@@ -157,7 +158,8 @@ int main()
         else if (joueur_courant == 3)
         {
             int profondeur = 2;
-            Position position = Position(EchiTTT, NULL, NULL, NULL, is_white_courant, num_tour);
+            ListeCoups listt= ListeCoups(0,NULL,NULL);
+            Position position = Position(*EchiTTT, listt , NULL, NULL, is_white_courant, num_tour);
             coupjoue = coup_min_max(position, profondeur);
             cout << "Au tour " << num_tour << ", le coup du joueur " << (is_white_courant ? "blanc" : "noir") << " est : " << *coupjoue << endl;
         }
