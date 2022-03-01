@@ -33,7 +33,7 @@ public:
     ~Position();
 };
 
-Coup coup_min_max(Position position, int profondeur);
+Coup *coup_min_max(Position position, int profondeur);
 
 
 

@@ -124,7 +124,7 @@ bool Position::estGagnante()
 }
 
 
-Coup *coup_min_max(Position position, int profondeur){
+Coup* coup_min_max(Position position, int profondeur){
     // ARRANGER LES "." ET "->", COMPLETEMENT HASARDEUX
     position.generateur(profondeur); //je ne sais pas appeler cette méthode
     position.MinMax(); // à coder
