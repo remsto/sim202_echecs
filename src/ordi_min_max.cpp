@@ -38,8 +38,9 @@ void Position::generateur(int profondeur)
     {
         actualisePlateau(plateauRef, coupsPrecedents);
         //actualise valeur de 1ere soeur
-        set_valeur(self); // à coder pour les échecs
-        ListeCoups *coupsPossibles = coupsPossiblesTTT(plateauRef, joueur, num_tour_de_jeu + 1); // regrouper avec valeur dans une méthode?
+        set_valeur(this); // à coder pour les échecs
+        ListeCoups *coupsPossibles = coupsPossiblesTTT(plateauRef, joueur, num_tour_de_jeu + 1); 
+    
         resetPlateau(plateauRef, coupsPrecedents);
 
         // CREATION 1ere FILLE
@@ -96,7 +97,7 @@ void annexe(int profondeur, ListeCoups coupsPossibles) //+ Position pos)
 
 int Position::set_valeur()
 {
-    if ((*this).estGagnante())
+    if (this->estGagnante())
     {
         return inf;
     }
@@ -120,24 +121,24 @@ bool Position::estGagnante()
 }
 
 
-Coup coup_min_max(Position position){
+Coup coup_min_max(Position position, int profondeur){
     // ARRANGER LES "." ET "->", COMPLETEMENT HASARDEUX
-    position.generateur(k); //je ne sais pas appeler cette méthode
+    position.generateur(profondeur); //je ne sais pas appeler cette méthode
     MinMax(position); // à coder
     Position *current = position->fille;
     Coup coup = (current->coupsPrecedents).last;
     while(current->soeur != NULL){ // Parcours de la génération fille
         if(position.joueur){
-            if(current.valeurMinMax > (current->soeur).valeurMinMax){
+            if(current->valeurMinMax > (current->soeur).valeurMinMax){
                 coup = ((current->soeur)->coupsPrecedents).last;
             }
         }
         else{
-            if(current.valeurMinMax < (current->soeur).valeurMinMax){
+            if(current->valeurMinMax < (current->soeur).valeurMinMax){
                 coup = ((current->soeur)->coupsPrecedents).last;
             }
         }
-        current = current.soeur;
+        current = current->soeur;
     }
     return coup
 
@@ -153,7 +154,7 @@ void MinMax(Position position){
         
         Position current = position->fille; 
         MinMax(current);
-        int temp = current.valeurMinMax;
+        int temp = current->valeurMinMax;
         while(current->soeur != NULL){
             current = current->soeur;
             MinMax(current);
@@ -161,14 +162,14 @@ void MinMax(Position position){
             if(position.joueur){
                 // Si joueur 1, on cherche le max  
                 // VERIFIER false OU true
-                if(current.valeurMinMax > temp){
-                    temp = current.valeurMinMax;
+                if(current->valeurMinMax > temp){
+                    temp = current->valeurMinMax;
                 }
             }
             else{
                 // Si joueur 2, on cherche le min
-                if(current.valeurMinMax < temp){
-                    temp = current.valeurMinMax;
+                if(current->valeurMinMax < temp){
+                    temp = current->valeurMinMax;
                 }
             }
         }
