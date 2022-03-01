@@ -27,10 +27,13 @@ public:
     bool estGagnante();
     int set_valeur();
     void generateur(int profondeur);
+    void MinMax();
+
+
     ~Position();
 };
 
-void MinMax(Position position);
+
 
 
 #endif
