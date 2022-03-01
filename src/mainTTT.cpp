@@ -1,6 +1,7 @@
 #include <iostream>
 using namespace std;
 #include "ordi_aleatoire.hpp"
+#include "ordi_min_max.hpp"
 //#define cout std::cout
 #define taillepp 3
 
