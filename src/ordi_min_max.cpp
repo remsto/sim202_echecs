@@ -146,10 +146,10 @@ Coup coup_min_max(Position position, int profondeur){
     return coup;
 }
 
-void MinMax(Position position){
+void Position::MinMax(){
     // Si position terminale
-    if(position.fille == NULL){
-        position.valeurMinMax = position.valeurPosition;
+    if(this->fille == NULL){
+        this->valeurMinMax = this->valeurPosition;
     }
     else{
         // Si le joueur est le joueur en train de jouer
@@ -175,6 +175,6 @@ void MinMax(Position position){
                 }
             }
         }
-        position.valeurMinMax = temp;
+        this->valeurMinMax = temp;
     }
 }
