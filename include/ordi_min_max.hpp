@@ -2,7 +2,7 @@
 #define ORDI_MIN_MAX_HPP
 
 #include <iostream>
-#include "environnement.hpp"
+//#include "environnement.hpp"
 #include "pour_jouer.hpp"
 
 #define inf 1000000

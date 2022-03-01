@@ -5,7 +5,7 @@
 using namespace std;
 #define taillepp 8
 
-int main1()
+int main()
 {
     Piece *piec_test = new Piece(true, pair<int, int>(1, 1), "Cavalier");
     char premiere_lettre = piec_test->type[0];
