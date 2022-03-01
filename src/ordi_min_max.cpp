@@ -146,7 +146,7 @@ Coup *coup_min_max(Position position, int profondeur){
     return &coup;
 }
 
-void Position::MinMax(){
+void Position::MinMax(bool is_white_current){
     // Si position terminale
     if(this->fille == NULL){
         this->valeurMinMax = this->valeurPosition;
@@ -161,15 +161,15 @@ void Position::MinMax(){
             current = current->soeur;
             current->MinMax();
             
-            if(this->joueur){
-                // Si joueur 1, on cherche le max  
+            if(this->joueur==is_white_current){
+                // Si le joueur du noeud est celui qui joue, MAX  
                 // VERIFIER false OU true
                 if(current->valeurMinMax > temp){
                     temp = current->valeurMinMax;
                 }
             }
             else{
-                // Si joueur 2, on cherche le min
+                // Si le joueur du noeud N'est PAS celui qui joue, MIN 
                 if(current->valeurMinMax < temp){
                     temp = current->valeurMinMax;
                 }

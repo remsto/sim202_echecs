@@ -20,14 +20,14 @@ public:
     int valeurMinMax;
     Position *soeur;
     Position *fille;
-    bool joueur; // qui a joué le prochain coup =is white ?
+    bool joueur; // qui a joule le prochain coup =is white ?
     int num_tour_de_jeu;
 
     Position(Echiquier &plateau, ListeCoups &coups, Position *positionSoeur, Position *positionFille, bool joueurCoup, int num_tour);
     bool estGagnante();
     int set_valeur();
     void generateur(int profondeur);
-    void MinMax();
+    void MinMax(bool is_white_current);
 
 
     ~Position();
