@@ -329,43 +329,6 @@ ostream &operator<<(ostream &out, const ListeCoups &Listcoup)
 ////MAJ plateau
 ///////
 
-void actualisePlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents)
-{
-    // Coup *dernierCoup = coupsPrecedents.last;
-    Coup *coup = coupsPrecedents.first;
-    int taillep = plateau.taille;
-
-    while (coup != NULL)
-    {
-        Piece piece = &(coup->pieceJouee);
-        pair<int, int> old = coup->oldPosition;
-        pair<int, int> news = coup->newPosition;
-        bool is_prise = (coup->Taken != NULL);
-
-        if (taillep == 3) // si tictactoe
-        {
-
-            Piece *new_piece = new Piece(piece); // on doit créer la pièce ?
-            new_piece->position_coor = news;
-            plateau.plateau[coor_to_pos(news, taillep)] = new_piece;
-        }
-        else // si echecs
-        {
-            Piece *old_piece = plateau.plateau[coor_to_pos(old, taillep)];
-
-            if (is_prise)
-            {
-                plateau.plateau[coor_to_pos(news, taillep)]->~Piece();
-            }
-
-            old_piece->position_coor = news;
-            plateau.plateau[coor_to_pos(news, taillep)] = old_piece;
-        }
-
-        coup = coup->Next;
-    }
-}
-
 // quand on a qu'un coup à faire ! + actualise la pièce
 void actualisePlateau(Echiquier &plateau, const Coup &coupjoue)
 {
@@ -395,34 +358,21 @@ void actualisePlateau(Echiquier &plateau, const Coup &coupjoue)
     }
 }
 
-void resetPlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents)
+
+void actualisePlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents)
 {
-    Coup *coup = coupsPrecedents.last;
+    cout << "témoin";
+    // Coup *dernierCoup = coupsPrecedents.last;
+    Coup *coup = coupsPrecedents.first;
     int taillep = plateau.taille;
-    // Coup *premierCoup = coupsPrecedents.first;
 
-    while (coup != NULL)
+    for(int i = 1; i==coupsPrecedents.taille; i++)
     {
-        Piece piece = &(coup->pieceJouee);
-        pair<int, int> old = coup->oldPosition;
-        pair<int, int> news = coup->newPosition;
-        Piece *new_piece = plateau.plateau[coor_to_pos(news, taillep)]; // on remonte à l'envers les étapes
-
-        if (taillep == 3) // si tictactoe
-        {
-            new_piece->~Piece(); // on doit supprimer la pièce !
-        }
-        else // si on joue aux echecs ! faire la prise ! A REVOIR ! impossible ou rajouter la liste des pièces prises
-        {
-            Piece *old_piece = plateau.plateau[coor_to_pos(old, taillep)];
-            old_piece = new_piece;
-            new_piece = NULL;
-            old_piece->position_coor = old;
-        }
-
-        coup = coup->Prev;
+        actualisePlateau(plateau, coup);
+        coup = coup->Next;
     }
 }
+
 
 void resetPlateau(Echiquier &plateau, const Coup &coup_jouee)
 {
@@ -433,10 +383,13 @@ void resetPlateau(Echiquier &plateau, const Coup &coup_jouee)
 
     if (taillep == 3) // si tictactoe
     {
-        new_piece->~Piece(); // on doit supprimer la pièce !
+        print("ouaf");
+        //new_piece->~Piece(); // on doit supprimer la pièce !
+        plateau.plateau[coor_to_pos(news, taillep)]=NULL;
     }
     else // si on joue aux echecs !
     {
+        print("ouafi");
         new_piece->position_coor = old;
         plateau.plateau[coor_to_pos(old, taillep)] = new_piece;
 
@@ -445,6 +398,20 @@ void resetPlateau(Echiquier &plateau, const Coup &coup_jouee)
             plateau.plateau[coor_to_pos(news, taillep)] = piece_prise;
         else
             plateau.plateau[coor_to_pos(news, taillep)] = NULL;
+    }
+}
+
+
+void resetPlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents)
+{
+    Coup *coup = coupsPrecedents.last;
+    int taillep = plateau.taille;
+    // Coup *premierCoup = coupsPrecedents.first;
+
+    for(int i = 1; i==coupsPrecedents.taille; i++)
+    {
+        resetPlateau(plateau, coup);
+        coup = coup->Prev;
     }
 }
 
