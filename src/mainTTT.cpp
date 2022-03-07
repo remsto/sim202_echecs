@@ -5,7 +5,7 @@ using namespace std;
 //#define cout std::cout
 #define taillepp 3
 
-int main()
+int main1()
 {
 
     bool is_fini = false;
