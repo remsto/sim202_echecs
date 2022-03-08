@@ -5,7 +5,7 @@ using namespace std;
 
 int main2()
 {
-
+/*
 	gamma_c = 0.5
 	gamma_p = 0.5		//coefficients pour calculer la valeur d'une position
 
@@ -229,5 +229,5 @@ int main2()
 		}
 		is_tour_joueur1 = (!(is_tour_joueur1));
 	}
-	return 0;
+	return 0; */
 }

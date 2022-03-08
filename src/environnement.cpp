@@ -42,13 +42,11 @@ Deplac_rel::Deplac_rel(pair<int, int> coord, Deplac_rel *next)
 Deplac_rel::Deplac_rel(const Deplac_rel &dep_a_copier)
 {
     coor = dep_a_copier.coor;
-    Next = new Deplac_rel(*dep_a_copier.Next);
+    Next = dep_a_copier.Next;
 }
 
 Deplac_rel::~Deplac_rel()
-{
-    if (this->Next != NULL) delete this->Next;  
-}
+{}
 
 ostream &operator<<(ostream &out, const Deplac_rel &dep)
 {
