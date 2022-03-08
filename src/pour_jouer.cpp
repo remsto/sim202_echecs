@@ -366,7 +366,7 @@ void actualisePlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents)
     Coup *coup = coupsPrecedents.first;
     int taillep = plateau.taille;
 
-    for(int i = 1; i==coupsPrecedents.taille; i++)
+    for(int i = 1; i==coupsPrecedents.nbCoups; i++)
     {
         actualisePlateau(plateau, coup);
         coup = coup->Next;
@@ -383,13 +383,11 @@ void resetPlateau(Echiquier &plateau, const Coup &coup_jouee)
 
     if (taillep == 3) // si tictactoe
     {
-        print("ouaf");
         //new_piece->~Piece(); // on doit supprimer la pièce !
         plateau.plateau[coor_to_pos(news, taillep)]=NULL;
     }
     else // si on joue aux echecs !
     {
-        print("ouafi");
         new_piece->position_coor = old;
         plateau.plateau[coor_to_pos(old, taillep)] = new_piece;
 
@@ -408,7 +406,7 @@ void resetPlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents)
     int taillep = plateau.taille;
     // Coup *premierCoup = coupsPrecedents.first;
 
-    for(int i = 1; i==coupsPrecedents.taille; i++)
+    for(int i = 1; i==coupsPrecedents.nbCoups; i++)
     {
         resetPlateau(plateau, coup);
         coup = coup->Prev;
