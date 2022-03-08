@@ -48,6 +48,7 @@ class Piece : public TypePiece
 public:
     bool isWhite; // white=rond
     pair<int, int> position_coor;
+    int valeur;
 
     Piece(bool isWhit = true, pair<int, int> coor = pair<int, int>(0, 0), string type = "Pion");
     Piece(const Piece &piece_a_copier);

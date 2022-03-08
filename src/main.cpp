@@ -7,6 +7,9 @@ using namespace std;
 int main2()
 {
 
+	gamma_c = 0.5
+	gamma_p = 0.5		//coefficients pour calculer la valeur d'une position
+
 	bool is_fini = false;
 	Echiquier *Echi = new Echiquier(taillepp);
 	int taillep = Echi->taille;
