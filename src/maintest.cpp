@@ -1,7 +1,5 @@
 #include "ordi_aleatoire.hpp"
 #include "ordi_min_max.hpp"
-#include <iostream>
-#include <random>
 #include "ordi_min_max.hpp"
 #include "pour_jouer.hpp"
 using namespace std;
@@ -9,18 +7,18 @@ using namespace std;
 
 int main()
 {
-    return 1;
-
-    /*Echiquier echiq = Echiquier(3);
+    Echiquier echiq(3);
     pair<int, int> newP = pair<int,int>(1,1);
     pair<int, int> oldP = pair<int,int>(0,0);
 
-    Coup *coup = new Coup(true, NULL, newP, oldP);
-    ListeCoups Lcoups = ListeCoups(1, coup, coup);
-    echiq.affiche();
+    Coup *coup = new Coup(true, NULL, newP, oldP, 0, NULL, false, NULL, NULL, false, false);
+    ListeCoups Lcoups(1, coup, coup);
+    //echiq.affiche();
     actualisePlateau(echiq, Lcoups);
-    echiq.affiche();
+    //echiq.affiche();
     resetPlateau(echiq, Lcoups);
-    echiq.affiche();*/
-    
+    //echiq.affiche();
+    cout << Lcoups; 
+    Position TTT(echiq, Lcoups, NULL, NULL, false, 0);
+    //TTT.generation(2);
 }

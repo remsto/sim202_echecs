@@ -1,7 +1,6 @@
-#include <iostream>
+#include "pour_jouer.hpp"
 #include <cstdlib>
 using namespace std;
-#include "pour_jouer.hpp"
 
 //////
 // COUP
@@ -52,6 +51,11 @@ Coup::Coup(const Coup &coup)
     {
         Prev = coup.Next;
     }
+}
+
+Coup::~Coup()
+{
+    if (Next!=0) delete Next; 
 }
 
 ostream &operator<<(ostream &out, const Coup &coup)
@@ -309,6 +313,11 @@ ListeCoups::ListeCoups()
     last = NULL;
 }
 
+ListeCoups::~ListeCoups()
+{
+    first->~Coup();
+}
+
 ostream &operator<<(ostream &out, const ListeCoups &Listcoup)
 {
 
@@ -361,14 +370,13 @@ void actualisePlateau(Echiquier &plateau, const Coup &coupjoue)
 
 void actualisePlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents)
 {
-    cout << "témoin";
     // Coup *dernierCoup = coupsPrecedents.last;
     Coup *coup = coupsPrecedents.first;
     int taillep = plateau.taille;
 
     for(int i = 1; i==coupsPrecedents.nbCoups; i++)
     {
-        actualisePlateau(plateau, coup);
+        actualisePlateau(plateau, *coup);
         coup = coup->Next;
     }
 }
@@ -408,7 +416,7 @@ void resetPlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents)
 
     for(int i = 1; i==coupsPrecedents.nbCoups; i++)
     {
-        resetPlateau(plateau, coup);
+        resetPlateau(plateau, *coup);
         coup = coup->Prev;
     }
 }
@@ -592,7 +600,7 @@ bool is_Echec(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current,
 
     // on doit verifier si l'un des déplacement de la pièce menace le roi ennemi sans piece entre les deux et si une autre piece vient menacer le roi !
     pair<int, int> new_position = piece_a_jouer->position_coor + dep_current->coor;
-    Coup coup_jouee = Coup(couleur_joueur, piece_a_jouer, new_position, piece_a_jouer->position_coor, num_tour, taken_coup(plateau, piece_a_jouer, dep_current, num_tour), is_Special(plateau, piece_a_jouer, dep_current), NULL, NULL, false, false); // a voir pour les deux derniers
+    Coup coup_jouee(couleur_joueur, piece_a_jouer, new_position, piece_a_jouer->position_coor, num_tour, taken_coup(plateau, piece_a_jouer, dep_current, num_tour), is_Special(plateau, piece_a_jouer, dep_current), NULL, NULL, false, false); // a voir pour les deux derniers
     actualisePlateau(plateau, coup_jouee);
     pair<int, int> place_roi_ennemi = (couleur_roi_en_echec ? plateau.roi_blanc->position_coor : plateau.roi_noir->position_coor);
     // plateau.affiche();
@@ -637,7 +645,7 @@ bool is_Mat(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current, i
 
     pair<int, int> new_position = piece_a_jouer->position_coor + dep_current->coor;
 
-    Coup coup_jouee = Coup(couleur_joueur, piece_a_jouer, new_position, piece_a_jouer->position_coor, num_tour, taken_coup(plateau, piece_a_jouer, dep_current, num_tour), is_Special(plateau, piece_a_jouer, dep_current), NULL, NULL, false, false); // a voir pour les deux derniers
+    Coup coup_jouee(couleur_joueur, piece_a_jouer, new_position, piece_a_jouer->position_coor, num_tour, taken_coup(plateau, piece_a_jouer, dep_current, num_tour), is_Special(plateau, piece_a_jouer, dep_current), NULL, NULL, false, false); // a voir pour les deux derniers
     actualisePlateau(plateau, coup_jouee);
     // plateau.affiche();
 

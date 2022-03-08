@@ -1,22 +1,22 @@
-#include <iostream>
-using namespace std;
 #include "ordi_min_max.hpp"
+using namespace std;
 
 ////
 // POSITION
 ////
 
-Position::Position(Echiquier &plateau, ListeCoups &coups, Position *positionSoeur, Position *positionFille, bool joueurCoup, int num_tour)
+Position::Position(Echiquier plateau, ListeCoups coups, Position *positionSoeur, Position *positionFille, bool joueurCoup, int num_tour)
 {
     plateauRef = plateau;
     joueur = joueurCoup;
     soeur = positionSoeur;
     fille = positionFille;
-    coupsPrecedents = coups;
+    ListeCoups new_coup (coups);
+    coupsPrecedents= new_coup;
     num_tour_de_jeu = num_tour;
 }
 
-Position::~Position() // a faire
+Position::~Position() 
 {
 
     coupsPrecedents.~ListeCoups();
@@ -28,6 +28,8 @@ Position::~Position() // a faire
     {
         fille->~Position();
     }
+    plateauRef.~Echiquier();
+    coupsPrecedents.~ListeCoups();
 } 
 
 // pour TTT a cause de coups possibles
@@ -129,21 +131,21 @@ Coup* coup_min_max(Position position, int profondeur){
     position.generateur(profondeur); //je ne sais pas appeler cette méthode
     position.MinMax(position.joueur); // à coder
     Position *current = position.fille;
-    Coup coup = *(current->coupsPrecedents).last;
+    Coup* coup = new Coup (*(current->coupsPrecedents).last);
     while(current->soeur != NULL){ // Parcours de la génération fille
         if(position.joueur){
             if(current->valeurMinMax > (current->soeur)->valeurMinMax){
-                coup = *((current->soeur)->coupsPrecedents).last;
+                coup = ((current->soeur)->coupsPrecedents).last;
             }
         }
         else{
             if(current->valeurMinMax < (current->soeur)->valeurMinMax){
-                coup = *((current->soeur)->coupsPrecedents).last;
+                coup = ((current->soeur)->coupsPrecedents).last;
             }
         }
         current = current->soeur;
     }
-    return &coup;
+    return coup;
 }
 
 void Position::MinMax(bool is_white_current){

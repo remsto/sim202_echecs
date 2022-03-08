@@ -1,8 +1,7 @@
 #include "ordi_aleatoire.hpp"
-
-#include <iostream>
-#include <random>
 #include <ctime>
+
+using namespace std;
 
 Coup *coup_aleatoire_TTT(const Echiquier &Echi, bool is_white, int num_tour)
 {

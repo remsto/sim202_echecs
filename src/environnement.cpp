@@ -1,10 +1,8 @@
+#include "environnement.hpp"
 
 #include <vector>
-#include <iostream>
-#include <random>
 #include <chrono>
 
-#include "environnement.hpp"
 using namespace std;
 
 /*
@@ -47,6 +45,11 @@ Deplac_rel::Deplac_rel(const Deplac_rel &dep_a_copier)
     Next = new Deplac_rel(*dep_a_copier.Next);
 }
 
+Deplac_rel::~Deplac_rel()
+{
+    if (this->Next != NULL) delete this->Next;  
+}
+
 ostream &operator<<(ostream &out, const Deplac_rel &dep)
 {
     out << "(" << dep.coor.first << "," << dep.coor.second << ")";
@@ -58,6 +61,11 @@ ListDeplac_rel::ListDeplac_rel(int nbdepla, Deplac_rel *first_dep, Deplac_rel *l
     nb_deplacement = nbdepla;
     first = first_dep;
     last = last_dep;
+}
+
+ListDeplac_rel::~ListDeplac_rel()
+{
+    first->~Deplac_rel();
 }
 
 ostream &operator<<(ostream &out, const ListDeplac_rel &listDep)
@@ -295,8 +303,7 @@ int coor_to_pos(pair<int, int> p, int taillep)
     return n;
 }
 
-pair<int, int>
-pos_to_coor(int n, int taillep)
+pair<int, int> pos_to_coor(int n, int taillep)
 {
     pair<int, int> p((n / taillep) + 1, (n % taillep) + 1);
     return p;

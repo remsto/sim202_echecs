@@ -1,7 +1,6 @@
-#include <iostream>
-using namespace std;
 #include "ordi_aleatoire.hpp"
-//#define cout std::cout
+using namespace std;
+
 #define taillepp 8
 
 int main2()

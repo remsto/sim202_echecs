@@ -1,7 +1,6 @@
 #ifndef POUR_JOUER_HPP
 #define POUR_JOUER_HPP
 
-#include <iostream>
 #include "environnement.hpp"
 
 //////
@@ -11,13 +10,13 @@
 class Coup
 {
 public:
-    Coup(bool isW, const Piece &pieceJ, pair<int, int> newP, pair<int, int> oldP, int num_tour_de_jeu = 0, Piece *taken = NULL, bool isSpecial = false, Coup *Next = NULL, Coup *Prev = NULL, bool is_echec = false, bool is_mat = false);
+    Coup(bool isW, const Piece &pieceJ, std::pair<int, int> newP, std::pair<int, int> oldP, int num_tour_de_jeu = 0, Piece *taken = NULL, bool isSpecial = false, Coup *Next = NULL, Coup *Prev = NULL, bool is_echec = false, bool is_mat = false);
     Coup(const Coup &coup);
     bool isWhite;
     Piece pieceJouee;
     // convention : 1 à N, (0,0)=hors plateau
-    pair<int, int> oldPosition;
-    pair<int, int> newPosition;
+    std::pair<int, int> oldPosition;
+    std::pair<int, int> newPosition;
     Piece *Taken;
     bool isSpecial;
     Coup *Next;
@@ -25,9 +24,10 @@ public:
     bool is_echec;
     bool is_mat;
     int num_tour_de_jeu;
+    ~Coup();
 };
 
-ostream &operator<<(ostream &out, const Coup &coup);
+std::ostream &operator<<(std::ostream &out, const Coup &coup);
 
 bool is_coup_gagnant_TTT(const Echiquier &plateauRef, const Coup &dernierCoup);
 
@@ -45,9 +45,10 @@ public:
     ListeCoups(int nbC, Coup *first_acopier, Coup *last_acopier);
     ListeCoups(const ListeCoups &a_copier);
     ListeCoups();
+    ~ListeCoups();
 };
 
-ostream &operator<<(ostream &out, const ListeCoups &Listcoup);
+std::ostream &operator<<(std::ostream &out, const ListeCoups &Listcoup);
 
 void addCoup(ListeCoups *L, Coup *C);
 
@@ -69,7 +70,7 @@ void resetPlateau(Echiquier &plateau, const ListeCoups &coup_jouee);
 /////
 
 bool is_legal(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current, int num_tour);
-bool is_piece_entre(const Echiquier &plateau, pair<int, int> place_depart, pair<int, int> place_arrive);
+bool is_piece_entre(const Echiquier &plateau, std::pair<int, int> place_depart, std::pair<int, int> place_arrive);
 
 Piece *taken_coup(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current, int num_tour);
 
