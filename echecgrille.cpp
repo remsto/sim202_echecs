@@ -15,6 +15,8 @@ void EchecGrille::setCase_selected(EchecCase *newCase_selected) {
 void EchecGrille::majEchecGraph(Echiquier *echi) {
   for (int i = 0; i < 64; i++) {
     list_case[i]->setPiece(echi->plateau[i]);
+    list_case[i]->setSelected(false);
+    list_case[i]->setCoup_possible(false);
   }
   update();
 }
@@ -62,6 +64,7 @@ void EchecGrille::setJoueurs(int joueur1, int joueur2) {
 void EchecGrille::rcvDepCoor(pair<int, int> coor) {
   for (int i = 0; i < 64; i++) {
     Deplac_rel *dep = new Deplac_rel(list_case[i]->getCoor() - coor);
+    depCoor = coor;
     if (is_legal(*echi,
                  qobject_cast<EchecCase *>(QObject::sender())->getPiece(), dep,
                  num_tour))
@@ -72,8 +75,32 @@ void EchecGrille::rcvDepCoor(pair<int, int> coor) {
   update();
 }
 
-void EchecGrille::rcvArrCoor(pair<int, int>) {
+// On met tout l'échiquier à jour lorsque l'on reçoit une coordonnées d'arrivée
+void EchecGrille::rcvArrCoor(pair<int, int> arrCoor) {
   qDebug() << "Ce coup est jouable !";
+  dep = new Deplac_rel(arrCoor - depCoor);
+  piece_jouee = echi->plateau[coor_to_pos(depCoor, taillep)];
+  Piece *piece_prise = taken_coup(*echi, piece_jouee, dep, num_tour);
+  bool is_spe = is_Special(*echi, piece_jouee, dep);
+  bool is_ech = is_Echec(*echi, piece_jouee, dep, num_tour, !is_white_courant);
+  bool is_ma = is_Mat(*echi, piece_jouee, dep, num_tour);
+  coupjoue = new Coup(is_white_courant, piece_jouee, arrCoor, depCoor, num_tour,
+                      piece_prise, is_spe, NULL, NULL, is_ech, is_ma);
+  actualisePlateau(*echi, *coupjoue);
+  addCoup(historique_coups, coupjoue);
+  majEchecGraph(echi);
+  is_tour_joueur1 = (!(is_tour_joueur1));
+  // a qui est-ce de jouer ?
+  if (is_tour_joueur1) {
+    joueur_courant = joueur1;
+    is_white_courant = is_white_1;
+  } else {
+    joueur_courant = joueur2;
+    is_white_courant = (!is_white_1);
+  }
+  if (coupjoue->is_mat) {
+    emit changeMessage("Fini !!");
+  }
 }
 
 bool EchecGrille::getIs_white_courant() const { return is_white_courant; }

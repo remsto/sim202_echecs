@@ -28,6 +28,7 @@ private:
   ListeCoups *historique_coups;
   int joueur1;
   int joueur2;
+  pair<int, int> depCoor;
 
 public slots:
   void nouvellePartie();
