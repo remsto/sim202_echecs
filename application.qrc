@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ressources/light_wood.jpg</file>
+        <file>ressources/dark_wood.jpg</file>
+        <file>ressources/white_rook.png</file>
+        <file>ressources/white_queen.png</file>
+        <file>ressources/white_pawn.png</file>
+        <file>ressources/white_knight.png</file>
+        <file>ressources/white_king.png</file>
+        <file>ressources/white_bishop.png</file>
+        <file>ressources/black_rook.png</file>
+        <file>ressources/black_queen.png</file>
+        <file>ressources/black_pawn.png</file>
+        <file>ressources/black_knight.png</file>
+        <file>ressources/black_king.png</file>
+        <file>ressources/black_bishop.png</file>
+    </qresource>
+</RCC>
