@@ -1,4 +1,9 @@
 #include "echecgrille.h"
+#include "include/environnement.hpp"
+#include "include/ordi_aleatoire.hpp"
+#include "joueurselect.h"
+
+#include <QDebug>
 
 EchecCase *EchecGrille::getCase_selected() const { return case_selected; }
 
@@ -34,4 +39,36 @@ void EchecGrille::fillList_case() {
   setCase_selected(list_case[0]);
   delete light_wood;
   delete dark_wood;
+}
+
+void EchecGrille::setJoueurs(int joueur1, int joueur2) {
+  this->joueur1 = joueur1;
+  this->joueur2 = joueur2;
+}
+
+void EchecGrille::nouvellePartie() {
+  is_fini = false;
+  echi = new Echiquier(8);
+  taillep = echi->taille;
+  num_tour = 0;
+  boucle_max = 1000;
+  historique_coups = new ListeCoups();
+  // mise en place des pièces
+  mise_en_place_echec_piece(*echi);
+
+  joueur1 = -1;
+  joueur2 = -1;
+  // Dialogue de selection des joueurs
+  JoueurSelect *joueurselect = new JoueurSelect(this);
+  QObject::connect(joueurselect, SIGNAL(sendJoueurs(int, int)), this,
+                   SLOT(setJoueurs(int, int)));
+  joueurselect->exec();
+  qDebug() << joueur1 << joueur2;
+  while (joueur1 == -1 || joueur2 == -1) {
+    JoueurSelect *joueurselect = new JoueurSelect(this);
+    QObject::connect(joueurselect, SIGNAL(sendJoueurs(int, int)), this,
+                     SLOT(setJoueurs(int, int)));
+    joueurselect->exec();
+    qDebug() << joueur1 << joueur2;
+  }
 }

@@ -9,17 +9,25 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    joueurselect.cpp \
+    src/environnement.cpp \
+    src/ordi_aleatoire.cpp \
+    src/ordi_min_max.cpp \
+    src/pour_jouer.cpp \
     echeccase.cpp \
     echecgrille.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    include/*.hpp \
     echeccase.h \
     echecgrille.h \
+    joueurselect.h \
     mainwindow.h
 
 FORMS += \
+    joueurselect.ui \
     mainwindow.ui
 
 # Default rules for deployment.

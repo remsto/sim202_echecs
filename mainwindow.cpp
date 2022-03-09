@@ -9,6 +9,13 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
   ui->echecGrille->fillList_case();
+  QObject::connect(ui->actionNouvelle_partie, SIGNAL(triggered(bool)),
+                   ui->echecGrille, SLOT(nouvellePartie()));
+}
+
+void MainWindow::nouvellePartie() {
+  // TODO doit lancer une nouvelle partie
+  qDebug() << "Pas encore implémenté !!";
 }
 
 MainWindow::~MainWindow() { delete ui; }
