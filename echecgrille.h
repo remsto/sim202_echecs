@@ -32,6 +32,11 @@ private:
 public slots:
   void nouvellePartie();
   void setJoueurs(int joueur1, int joueur2);
+  void rcvDepCoor(pair<int, int>);
+  void rcvArrCoor(pair<int, int>);
+
+signals:
+  void changeMessage(QString message);
 
 public:
   using QWidget::QWidget;
@@ -39,6 +44,9 @@ public:
   void fillList_case();
   EchecCase *getCase_selected() const;
   void setCase_selected(EchecCase *newCase_selected);
+  void majEchecGraph(Echiquier *echi);
+  bool getIs_white_courant() const;
+  void setIs_white_courant(bool newIs_white_courant);
 };
 
 #endif // ECHECGRILLE_H

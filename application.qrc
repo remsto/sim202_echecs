@@ -2,17 +2,17 @@
     <qresource prefix="/">
         <file>ressources/light_wood.jpg</file>
         <file>ressources/dark_wood.jpg</file>
-        <file>ressources/white_rook.png</file>
-        <file>ressources/white_queen.png</file>
-        <file>ressources/white_pawn.png</file>
-        <file>ressources/white_knight.png</file>
-        <file>ressources/white_king.png</file>
-        <file>ressources/white_bishop.png</file>
-        <file>ressources/black_rook.png</file>
-        <file>ressources/black_queen.png</file>
-        <file>ressources/black_pawn.png</file>
-        <file>ressources/black_knight.png</file>
-        <file>ressources/black_king.png</file>
-        <file>ressources/black_bishop.png</file>
+        <file>ressources/white_Tour.png</file>
+        <file>ressources/white_Dame.png</file>
+        <file>ressources/white_Pion.png</file>
+        <file>ressources/white_Cavalier.png</file>
+        <file>ressources/white_Roi.png</file>
+        <file>ressources/white_Fou.png</file>
+        <file>ressources/black_Tour.png</file>
+        <file>ressources/black_Dame.png</file>
+        <file>ressources/black_Pion.png</file>
+        <file>ressources/black_Cavalier.png</file>
+        <file>ressources/black_Roi.png</file>
+        <file>ressources/black_Fou.png</file>
     </qresource>
 </RCC>

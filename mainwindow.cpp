@@ -11,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent)
   ui->echecGrille->fillList_case();
   QObject::connect(ui->actionNouvelle_partie, SIGNAL(triggered(bool)),
                    ui->echecGrille, SLOT(nouvellePartie()));
+  QObject::connect(ui->echecGrille, SIGNAL(changeMessage(QString)),
+                   ui->messageDisplayer, SLOT(setText(QString)));
 }
 
 void MainWindow::nouvellePartie() {

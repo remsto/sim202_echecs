@@ -428,7 +428,7 @@ bool is_legal(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current,
     dep_etudie = dep_etudie->Next;
   }
   if (!is_in_list) {
-    cout << "Ce déplacement n'est pas autorisé pour cette pièce.\n";
+    // cout << "Ce déplacement n'est pas autorisé pour cette pièce.\n";
     return false;
   }
 
@@ -437,7 +437,7 @@ bool is_legal(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current,
   pair<int, int> new_place = old_place + dep_current->coor;
   if ((new_place.first < 1) || (new_place.first > taillep) ||
       (new_place.second < 1) || (new_place.second > taillep)) {
-    cout << "Ce déplacement sort du plateau.\n";
+    // cout << "Ce déplacement sort du plateau.\n";
     return false;
   }
 
@@ -445,14 +445,14 @@ bool is_legal(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current,
   int new_place_pos = coor_to_pos(new_place, taillep);
   if ((plateau.plateau[new_place_pos] != NULL) &&
       (plateau.plateau[new_place_pos]->isWhite == couleur_joueur)) {
-    cout << "Cette case est occupée par l'une de vos pièces.\n";
+    // cout << "Cette case est occupée par l'une de vos pièces.\n";
     return false;
   }
 
   // verifiez si il y a une pièce le long du déplacement
   if ((piece_a_jouer->type != "Cavalier") &&
       (is_piece_entre(plateau, old_place, new_place))) {
-    cout << "il y a une place qui vous bloque\n";
+    // cout << "il y a une place qui vous bloque\n";
     return false;
   }
 
@@ -464,7 +464,7 @@ bool is_legal(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current,
          (dep_current->coor == pair<int, int>(2, 0)) ||
          (dep_current->coor == pair<int, int>(-2, 0))) &&
         (plateau.plateau[coor_to_pos(new_place, taillep)] != NULL)) {
-      cout << "Le pion qui va tout droit ne peut pas manger";
+      // cout << "Le pion qui va tout droit ne peut pas manger";
       return false;
     }
 
@@ -476,18 +476,18 @@ bool is_legal(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current,
         ((plateau.plateau[coor_to_pos(new_place, taillep)] == NULL) ||
          (plateau.plateau[coor_to_pos(new_place, taillep)]->isWhite ==
           couleur_joueur))) {
-      cout << "Le pion qui va tout droit ne peut pas manger";
+      // cout << "Le pion qui va tout droit ne peut pas manger";
       return false;
     }
 
     // il ne peut pas avancer de deux pas sauf au début
     if ((dep_current->coor == pair<int, int>(2, 0)) && (old_place.first != 2)) {
-      cout << "On ne peut avancer de deux cases sauf au premier coup";
+      // cout << "On ne peut avancer de deux cases sauf au premier coup";
       return false;
     }
     if ((dep_current->coor == pair<int, int>(-2, 0)) &&
         (old_place.first != 7)) {
-      cout << "On ne peut avancer de deux cases sauf au premier coup";
+      // cout << "On ne peut avancer de deux cases sauf au premier coup";
       return false;
     }
     // le pion a un sens impose
@@ -496,7 +496,7 @@ bool is_legal(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current,
          (dep_current->coor == pair<int, int>(-1, 0)) ||
          (dep_current->coor == pair<int, int>(-1, 1)) ||
          (dep_current->coor == pair<int, int>(-1, -1)))) {
-      cout << "On ne peut pas reculer";
+      // cout << "On ne peut pas reculer";
       return false;
     }
     if ((couleur_joueur == false) &&
@@ -504,7 +504,7 @@ bool is_legal(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current,
          (dep_current->coor == pair<int, int>(1, 0)) ||
          (dep_current->coor == pair<int, int>(1, 1)) ||
          (dep_current->coor == pair<int, int>(1, -1)))) {
-      cout << "On ne peut pas reculer";
+      // cout << "On ne peut pas reculer";
       return false;
     }
   }
