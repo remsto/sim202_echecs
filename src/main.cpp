@@ -6,7 +6,7 @@ using namespace std;
 
 int main()
 {
-
+	int dummy = 0;
 	bool is_fini = false;
 	Echiquier *Echi = new Echiquier(taillepp);
 	int taillep = Echi->taille;
