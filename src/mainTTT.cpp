@@ -1,6 +1,7 @@
 #include <iostream>
 using namespace std;
 #include "ordi_aleatoire.hpp"
+#include "ordi_min_max.hpp"
 //#define cout std::cout
 #define taillepp 3
 
@@ -11,7 +12,7 @@ int main()
     Echiquier *EchiTTT = new Echiquier(taillepp);
     int taillep = EchiTTT->taille;
     int num_tour = 0;
-    int boucle_max = taillep * taillep;
+    char ligne_char;
     int ligne;
     char colonne_char;
     int colonne; // pour entrer où jouer
@@ -20,12 +21,12 @@ int main()
     bool is_tour_joueur1;
     bool is_white_1;
     bool is_white_courant;
+    int profondeur;
     pair<int, int> p;
+    int gagnant;
 
     Coup *coupjoue;
     Piece *piece_jouee;
-
-    ListeCoups *historique_coups = new ListeCoups();
 
     // Tirez au sort celui qui commence
     cout << "Bienvenue, tout d'abord choisissons qui joue: \n";
@@ -33,7 +34,12 @@ int main()
     cout << "Pour chaque joueur, entrez un entier sachant que : \n";
     cout << "1: Joueur humain \n";
     cout << "2: Ordi aléatoire \n";
-    cout << "3: Ordi avec min-max profondeur ... \n";
+    cout << "3: Ordi avec min-max profondeur 1 \n";
+    cout << "4: Ordi avec min-max profondeur 2 \n";
+    cout << "5: Ordi avec min-max profondeur 3 \n";
+    cout << "6: Ordi avec min-max profondeur 4 \n";
+    cout << "7: Ordi avec min-max profondeur 5 \n";
+
     int joueur1, joueur2;
     cout << "Qui est le joueur 1 ?";
     cin >> joueur1;
@@ -73,7 +79,7 @@ int main()
         is_white_1 = is_tour_joueur1;
     }
 
-    while (num_tour < boucle_max && !is_fini)
+    while (!is_fini)
     {
 
         // a qui est-ce de jouer ?
@@ -114,9 +120,10 @@ int main()
             while (!is_coups_correct)
             {
                 cout << "Entrez la ligne :";
-                cin >> ligne;
+                cin >> ligne_char;
                 cout << "Entrez la colonne :";
                 cin >> colonne_char; // conversion
+                ligne = ligne_char - 48;
                 colonne = colonne_char - 96;
                 // verifiez conformité
                 if (ligne > taillep || ligne <= 0)
@@ -156,7 +163,38 @@ int main()
         // C'est à l'ordi min_max de profondeur ?? de jouer,, choix du coup !
         else if (joueur_courant == 3)
         {
-            
+            profondeur = 1;
+            cout << "Le joueur minmax recherche un coup de profondeur" << profondeur << " ... ";
+            coupjoue = coup_min_max(EchiTTT, is_white_courant, num_tour, profondeur);
+            cout << "Au tour " << num_tour << ", le coup du joueur " << (is_white_courant ? "blanc" : "noir") << " est : " << *coupjoue << endl;
+        }
+        else if (joueur_courant == 4)
+        {
+            profondeur = 2;
+            cout << "Le joueur minmax recherche un coup de profondeur" << profondeur << " ... ";
+            coupjoue = coup_min_max(EchiTTT, is_white_courant, num_tour, profondeur);
+            cout << "Au tour " << num_tour << ", le coup du joueur " << (is_white_courant ? "blanc" : "noir") << " est : " << *coupjoue << endl;
+        }
+        else if (joueur_courant == 5)
+        {
+            profondeur = 3;
+            cout << "Le joueur minmax recherche un coup de profondeur" << profondeur << " ... ";
+            coupjoue = coup_min_max(EchiTTT, is_white_courant, num_tour, profondeur);
+            cout << "Au tour " << num_tour << ", le coup du joueur " << (is_white_courant ? "blanc" : "noir") << " est : " << *coupjoue << endl;
+        }
+        else if (joueur_courant == 6)
+        {
+            profondeur = 4;
+            cout << "Le joueur minmax recherche un coup de profondeur" << profondeur << " ... ";
+            coupjoue = coup_min_max(EchiTTT, is_white_courant, num_tour, profondeur);
+            cout << "Au tour " << num_tour << ", le coup du joueur " << (is_white_courant ? "blanc" : "noir") << " est : " << *coupjoue << endl;
+        }
+        else if (joueur_courant == 7)
+        {
+            profondeur = 4;
+            cout << "Le joueur minmax recherche un coup de profondeur" << profondeur << " ... ";
+            coupjoue = coup_min_max(EchiTTT, is_white_courant, num_tour, profondeur);
+            cout << "Au tour " << num_tour << ", le coup du joueur " << (is_white_courant ? "blanc" : "noir") << " est : " << *coupjoue << endl;
         }
 
         else
@@ -170,15 +208,17 @@ int main()
         actualisePlateau(*EchiTTT, *coupjoue);
         cout << "Voici le déplacement effectué : \n";
         EchiTTT->affiche();
-        addCoup(historique_coups, coupjoue);
-        is_fini = is_coup_gagnant_TTT(*EchiTTT, *coupjoue);
+        is_fini = coupjoue->is_mat;
         if (is_fini)
         {
-            cout << "Victoire";
+            cout << "Victoire du joueur ";
+            cout << (is_white_courant ? "Blanc" : "Noir");
+            cout << "!";
+            return 0;
         }
         else
         {
-            if ((num_tour < 5))
+            if (is_coupsPossiblesTTT(*EchiTTT, !is_white_courant, num_tour))
             {
                 cout << "Pas de Victoire, on continue ! \n";
             }
@@ -186,6 +226,7 @@ int main()
             {
                 cout << "Egalité !\n";
                 is_fini = true;
+                return 0;
             }
         }
         is_tour_joueur1 = (!(is_tour_joueur1));

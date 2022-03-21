@@ -2,7 +2,6 @@
 #define ORDI_MIN_MAX_HPP
 
 #include <iostream>
-#include "environnement.hpp"
 #include "pour_jouer.hpp"
 
 #define inf 1000000
@@ -14,21 +13,25 @@
 class Position
 {
 public:
-    Echiquier plateauRef;
-    ListeCoups coupsPrecedents;
-    int valeurPosition = 0; // attribut, à iniialiser avec set_valeur()
-    int valeurMinMax;
-    Position *soeur;
-    Position *fille;
-    bool joueur; // qui a joué le prochain coup =is white ?
-    int num_tour_de_jeu;
+    Echiquier *PlateauRef;
+    list<Coup> CoupsPrecedents;
+    // int ValeurPosition; // attribut, à iniialiser avec set_valeur()
+    int ValeurMinMax;
+    Position *Soeur;
+    Position *Fille;
+    bool Joueur_courant; // qui a joule le prochain coup =is white ?
+    int Num_tour_de_jeu;
+    bool Joueur;
 
-    Position(Echiquier &plateau, ListeCoups &coups, Position *positionSoeur, Position *positionFille, bool joueurCoup, int num_tour);
-    bool estGagnante();
-    int set_valeur();
+    Position(Echiquier *plateau, list<Coup> coups, Position *positionSoeur, Position *positionFille, bool joueur_courant, int num_tour, bool joueur, int valeur = 0);
+    // bool estGagnante();
+    void set_valeur(); // si on arrive à une fille, on apelle cette fonction
     void generateur(int profondeur);
+    // void MinMax(bool is_white_current);
+
     ~Position();
 };
 
+Coup *coup_min_max(Echiquier *EchiTTT, bool is_white_courant, int num_tour, int profondeur);
 
 #endif

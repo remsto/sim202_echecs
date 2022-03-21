@@ -2,82 +2,48 @@
 #define POUR_JOUER_HPP
 
 #include <iostream>
+#include <string>
 #include "environnement.hpp"
-
-//////
-// COUP
-//////
-
-class Coup
-{
-public:
-    Coup(bool isW, const Piece &pieceJ, pair<int, int> newP, pair<int, int> oldP, int num_tour_de_jeu = 0, Piece *taken = NULL, bool isSpecial = false, Coup *Next = NULL, Coup *Prev = NULL, bool is_echec = false, bool is_mat = false);
-    Coup(const Coup &coup);
-    bool isWhite;
-    Piece pieceJouee;
-    // convention : 1 à N, (0,0)=hors plateau
-    pair<int, int> oldPosition;
-    pair<int, int> newPosition;
-    Piece *Taken;
-    bool isSpecial;
-    Coup *Next;
-    Coup *Prev;
-    bool is_echec;
-    bool is_mat;
-    int num_tour_de_jeu;
-};
-
-ostream &operator<<(ostream &out, const Coup &coup);
-
-bool is_coup_gagnant_TTT(const Echiquier &plateauRef, const Coup &dernierCoup);
 
 //////
 // LISTECOUPS
 //////
 
-class ListeCoups
-{
-public:
-    int nbCoups;
-    Coup *first;
-    Coup *last;
+ostream &operator<<(ostream &out, const list<Coup> &Listcoup);
 
-    ListeCoups(int nbC, Coup *first_acopier, Coup *last_acopier);
-    ListeCoups(const ListeCoups &a_copier);
-    ListeCoups();
-};
+void addCoup(list<Coup> &L, const Coup &C);
 
-ostream &operator<<(ostream &out, const ListeCoups &Listcoup);
-
-void addCoup(ListeCoups *L, Coup *C);
-
-ListeCoups *coupsPossiblesTTT(const Echiquier &plateau, bool isWhite, int num_tour);
-ListeCoups *coupsPossibles(Echiquier &plateau, bool isWhite, int num_tour);
-
+list<Coup> coupsPossiblesTTT(const Echiquier &plateau, bool isWhite, int num_tour);
+list<Coup> coupsPossibles(Echiquier &plateau, bool isWhite, int num_tour);
+bool is_coupsPossiblesTTT(Echiquier &plateau, bool isWhite, int num_tour);
+bool is_coupsPossibles(Echiquier &plateau, bool isWhite, int num_tour);
 ///////
 ////MAJ plateau
 ///////
 
-void actualisePlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents);
+void actualise_type(Piece &piece, string new_type);
+
+void actualisePlateau(Echiquier &plateau, const list<Coup> &coupsPrecedents);
 void actualisePlateau(Echiquier &plateau, const Coup &coupjoue);
 
-void resetPlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents);
-void resetPlateau(Echiquier &plateau, const ListeCoups &coup_jouee);
+void resetPlateau(Echiquier &plateau, const list<Coup> &coupsPrecedents);
+void resetPlateau(Echiquier &plateau, const Coup &coup_jouee);
 
 /////
 // Autre
 /////
 
-bool is_legal(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current, int num_tour);
+bool is_legal(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel dep_current, int num_tour, CoupSpecial coup_special, string type_promu);
+
 bool is_piece_entre(const Echiquier &plateau, pair<int, int> place_depart, pair<int, int> place_arrive);
 
-Piece *taken_coup(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current, int num_tour);
+Piece *taken_coup(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel dep_current, CoupSpecial coup_special);
 
-bool is_Special(const Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current);
+CoupSpecial Special(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel dep_current, int num_tour);
 
 // est ce qu'on met en echec le roi ennemi ou le notre
-bool is_Echec(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current, int num_tour, bool couleur_roi_en_echec); // s'il met en echec le roi ennemi !
+bool is_Echec(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel dep_current, int num_tour, bool couleur_roi_en_echec, string type_promu, CoupSpecial coup_special); // s'il met en echec le roi ennemi !
 
-bool is_Mat(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel *dep_current, int num_tour); // le coup met mat le roi ennemi
+bool is_Mat(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel dep_current, int num_tour, string type_promu, CoupSpecial coup_special, bool is_ech); // le coup met mat le roi ennemi
 
 #endif

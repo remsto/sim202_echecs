@@ -35,16 +35,14 @@ pour info :
 
 // class Deplac_rel et ListDeplac_rel
 
-Deplac_rel::Deplac_rel(pair<int, int> coord, Deplac_rel *next)
+Deplac_rel::Deplac_rel(pair<int, int> coord)
 {
     coor = coord;
-    Next = next;
 }
 
 Deplac_rel::Deplac_rel(const Deplac_rel &dep_a_copier)
 {
     coor = dep_a_copier.coor;
-    Next = new Deplac_rel(*dep_a_copier.Next);
 }
 
 ostream &operator<<(ostream &out, const Deplac_rel &dep)
@@ -53,22 +51,15 @@ ostream &operator<<(ostream &out, const Deplac_rel &dep)
     return out;
 }
 
-ListDeplac_rel::ListDeplac_rel(int nbdepla, Deplac_rel *first_dep, Deplac_rel *last_dep)
+ostream &operator<<(ostream &out, const list<Deplac_rel> &listDep)
 {
-    nb_deplacement = nbdepla;
-    first = first_dep;
-    last = last_dep;
-}
-
-ostream &operator<<(ostream &out, const ListDeplac_rel &listDep)
-{
-    Deplac_rel *dep_current = listDep.first;
-    out << listDep.nb_deplacement << " : "
+    list<Deplac_rel>::const_iterator it = listDep.begin();
+    out << listDep.size() << " : "
         << "[";
-    while (dep_current != NULL)
+    while (it != listDep.end())
     {
-        out << *dep_current << ";";
-        dep_current = dep_current->Next;
+        out << *it << ";";
+        it++;
     }
     out << "]";
     return out;
@@ -83,133 +74,130 @@ TypePiece::TypePiece(string typee)
     if (type == "Pion")
     {
         valeur = 1;
-        Deplac_rel *dep_pion1 = new Deplac_rel(pair<int, int>(1, 0), NULL);
-        Deplac_rel *dep_pion2 = new Deplac_rel(pair<int, int>(1, 1), dep_pion1);
-        Deplac_rel *dep_pion3 = new Deplac_rel(pair<int, int>(1, -1), dep_pion2);
-        Deplac_rel *dep_pion4 = new Deplac_rel(pair<int, int>(2, 0), dep_pion3);
-        Deplac_rel *dep_pion5 = new Deplac_rel(pair<int, int>(-1, 0), dep_pion4);
-        Deplac_rel *dep_pion6 = new Deplac_rel(pair<int, int>(-1, -1), dep_pion5);
-        Deplac_rel *dep_pion7 = new Deplac_rel(pair<int, int>(-1, 1), dep_pion6);
-        Deplac_rel *dep_pion8 = new Deplac_rel(pair<int, int>(-2, 0), dep_pion7);
+        list<Deplac_rel> list_dep;
+        list_dep.push_back(Deplac_rel(pair<int, int>(1, 0)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(1, 1)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(1, -1)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(2, 0)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(-1, 0)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(-1, -1)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(-1, 1)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(-2, 0)));
 
-        deplac_relatif = ListDeplac_rel(8, dep_pion8, dep_pion1);
+        deplac_relatif = list_dep;
     }
+
     else if (type == "Tour")
     {
         valeur = 5;
 
-        Deplac_rel *dep_tour = new Deplac_rel(pair<int, int>(1, 0), NULL);
-        Deplac_rel *last_dep = dep_tour;
-        for (int i = 2; i <= 7; i++)
-        {
-            dep_tour = new Deplac_rel(pair<int, int>(i, 0), dep_tour);
-        }
+        list<Deplac_rel> list_dep;
+
         for (int i = 1; i <= 7; i++)
         {
-            dep_tour = new Deplac_rel(pair<int, int>(-i, 0), dep_tour);
-            dep_tour = new Deplac_rel(pair<int, int>(0, i), dep_tour);
-            dep_tour = new Deplac_rel(pair<int, int>(0, -i), dep_tour);
+            list_dep.push_back(Deplac_rel(pair<int, int>(i, 0)));
+            list_dep.push_back(Deplac_rel(pair<int, int>(-i, 0)));
+            list_dep.push_back(Deplac_rel(pair<int, int>(0, i)));
+            list_dep.push_back(Deplac_rel(pair<int, int>(0, -i)));
         }
-        deplac_relatif = ListDeplac_rel(28, dep_tour, last_dep);
+        deplac_relatif = list_dep;
     }
 
     else if (type == "Cavalier")
     {
         valeur = 3;
 
-        Deplac_rel *dep_cavalier1 = new Deplac_rel(pair<int, int>(-1, -2), NULL);
-        Deplac_rel *dep_cavalier2 = new Deplac_rel(pair<int, int>(-1, 2), dep_cavalier1);
-        Deplac_rel *dep_cavalier3 = new Deplac_rel(pair<int, int>(1, -2), dep_cavalier2);
-        Deplac_rel *dep_cavalier4 = new Deplac_rel(pair<int, int>(1, 2), dep_cavalier3);
-        Deplac_rel *dep_cavalier5 = new Deplac_rel(pair<int, int>(-2, -1), dep_cavalier4);
-        Deplac_rel *dep_cavalier6 = new Deplac_rel(pair<int, int>(-2, 1), dep_cavalier5);
-        Deplac_rel *dep_cavalier7 = new Deplac_rel(pair<int, int>(2, -1), dep_cavalier6);
-        Deplac_rel *dep_cavalier8 = new Deplac_rel(pair<int, int>(2, 1), dep_cavalier7);
+        list<Deplac_rel> list_dep;
 
-        deplac_relatif = ListDeplac_rel(8, dep_cavalier8, dep_cavalier1);
+        list_dep.push_back(Deplac_rel(pair<int, int>(-1, -2)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(-1, 2)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(1, -2)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(1, 2)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(-2, -1)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(-2, 1)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(2, -1)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(2, 1)));
+
+        deplac_relatif = list_dep;
     }
 
     else if (type == "Fou")
     {
         valeur = 3;
 
-        Deplac_rel *dep_fou = new Deplac_rel(pair<int, int>(1, 1), NULL);
-        Deplac_rel *last_dep = dep_fou;
+        list<Deplac_rel> list_dep;
 
-        for (int i = 2; i <= 7; i++)
-        {
-            dep_fou = new Deplac_rel(pair<int, int>(i, i), dep_fou);
-        }
         for (int i = 1; i <= 7; i++)
         {
-            dep_fou = new Deplac_rel(pair<int, int>(i, -i), dep_fou);
-            dep_fou = new Deplac_rel(pair<int, int>(-i, -i), dep_fou);
-            dep_fou = new Deplac_rel(pair<int, int>(-i, i), dep_fou);
+            list_dep.push_back(Deplac_rel(pair<int, int>(i, i)));
+            list_dep.push_back(Deplac_rel(pair<int, int>(i, -i)));
+            list_dep.push_back(Deplac_rel(pair<int, int>(-i, -i)));
+            list_dep.push_back(Deplac_rel(pair<int, int>(-i, i)));
         }
-        deplac_relatif = ListDeplac_rel(28, dep_fou, last_dep);
+        deplac_relatif = list_dep;
     }
     else if (type == "Roi")
     {
         valeur = 100; // arbitraire, à réfléchir
+        list<Deplac_rel> list_dep;
 
-        Deplac_rel *dep_roi1 = new Deplac_rel(pair<int, int>(-1, -1), NULL);
-        Deplac_rel *dep_roi2 = new Deplac_rel(pair<int, int>(0, -1), dep_roi1);
-        Deplac_rel *dep_roi3 = new Deplac_rel(pair<int, int>(1, -1), dep_roi2);
-        Deplac_rel *dep_roi4 = new Deplac_rel(pair<int, int>(1, 0), dep_roi3);
-        Deplac_rel *dep_roi5 = new Deplac_rel(pair<int, int>(-1, 0), dep_roi4);
-        Deplac_rel *dep_roi6 = new Deplac_rel(pair<int, int>(-1, 1), dep_roi5);
-        Deplac_rel *dep_roi7 = new Deplac_rel(pair<int, int>(0, 1), dep_roi6);
-        Deplac_rel *dep_roi8 = new Deplac_rel(pair<int, int>(1, 1), dep_roi7);
-        // Deplac_rel *dep_roi9 = new Deplac_rel(pair<int, int>(0, -3), dep_roi8); // pour roquer, a reflechir
-        // Deplac_rel *dep_roi10 = new Deplac_rel(pair<int, int>(0, 2), dep_roi9); // pour roquer, a reflechir
+        list_dep.push_back(Deplac_rel(pair<int, int>(-1, -1)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(0, -1)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(1, -1)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(1, 0)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(-1, 0)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(-1, 1)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(0, 1)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(1, 1)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(0, 2)));
+        list_dep.push_back(Deplac_rel(pair<int, int>(0, -2)));
 
-        deplac_relatif = ListDeplac_rel(8, dep_roi8, dep_roi1);
+        deplac_relatif = list_dep;
     }
     else if (type == "Dame")
     {
         valeur = 9;
 
-        Deplac_rel *dep_Dame = new Deplac_rel(pair<int, int>(1, 0), NULL);
+        list<Deplac_rel> list_dep;
 
-        Deplac_rel *last_dep = dep_Dame;
-        for (int i = 2; i <= 7; i++)
-        {
-            // colonnes et lignes
-            dep_Dame = new Deplac_rel(pair<int, int>(i, 0), dep_Dame);
-        }
         for (int i = 1; i <= 7; i++)
         {
-            dep_Dame = new Deplac_rel(pair<int, int>(-i, 0), dep_Dame);
-            dep_Dame = new Deplac_rel(pair<int, int>(0, i), dep_Dame);
-            dep_Dame = new Deplac_rel(pair<int, int>(0, -i), dep_Dame);
+            // colonnes et lignes
+            list_dep.push_back(Deplac_rel(pair<int, int>(i, 0)));
+            list_dep.push_back(Deplac_rel(pair<int, int>(-i, 0)));
+            list_dep.push_back(Deplac_rel(pair<int, int>(0, i)));
+            list_dep.push_back(Deplac_rel(pair<int, int>(0, -i)));
 
             // diagonales
-            dep_Dame = new Deplac_rel(pair<int, int>(i, i), dep_Dame);
-            dep_Dame = new Deplac_rel(pair<int, int>(i, -i), dep_Dame);
-            dep_Dame = new Deplac_rel(pair<int, int>(-i, -i), dep_Dame);
-            dep_Dame = new Deplac_rel(pair<int, int>(-i, i), dep_Dame);
+            list_dep.push_back(Deplac_rel(pair<int, int>(i, i)));
+            list_dep.push_back(Deplac_rel(pair<int, int>(i, -i)));
+            list_dep.push_back(Deplac_rel(pair<int, int>(-i, -i)));
+            list_dep.push_back(Deplac_rel(pair<int, int>(-i, i)));
         }
-        deplac_relatif = ListDeplac_rel(56, dep_Dame, last_dep);
+        deplac_relatif = list_dep;
     }
     else
     {
         valeur = 1;
-        deplac_relatif = ListDeplac_rel();
+        list<Deplac_rel> list_dep;
+        deplac_relatif = list_dep;
     }
 }
 
 // class Piece
 
-Piece::Piece(bool isWhit, pair<int, int> coor, string type) : TypePiece(type)
+Piece::Piece(bool isWhit, int bouger, pair<int, int> coor, string typee) : TypePiece(typee)
 {
     isWhite = isWhit;
     position_coor = coor;
+    a_bouge = bouger;
 }
 
 Piece::Piece(const Piece &piece_a_copier) : TypePiece(piece_a_copier.type)
 {
     isWhite = piece_a_copier.isWhite;
     position_coor = piece_a_copier.position_coor;
+    a_bouge = piece_a_copier.a_bouge;
 }
 
 ostream &operator<<(ostream &out, const Piece &piece)
@@ -226,23 +214,121 @@ ostream &operator<<(ostream &out, const Piece &piece)
     return out;
 }
 
+//////
+// COUP
+//////
+
+Coup::Coup(bool isW, const Piece &pieceJ, pair<int, int> newP, pair<int, int> oldP, int num_tour, Piece *taken, CoupSpecial coup_special, string type_promu, bool is_ech, bool is_m)
+{
+    isWhite = isW;
+    pieceJouee = pieceJ;
+    oldPosition = oldP;
+    newPosition = newP;
+    Taken = taken;
+    Coup_special = coup_special;
+    Type_Promu = type_promu;
+    is_echec = is_ech;
+    is_mat = is_m;
+    num_tour_de_jeu = num_tour;
+}
+
+Coup::Coup(const Coup &coup)
+{
+    isWhite = coup.isWhite;
+    pieceJouee = coup.pieceJouee;
+    oldPosition = coup.oldPosition;
+    newPosition = coup.newPosition;
+    Taken = coup.Taken;
+    Coup_special = coup.Coup_special;
+    Type_Promu = coup.Type_Promu;
+    is_echec = coup.is_echec;
+    is_mat = coup.is_mat;
+    num_tour_de_jeu = coup.num_tour_de_jeu;
+}
+
+Coup::~Coup()
+{
+}
+
+ostream &operator<<(ostream &out, const Coup &coup)
+{
+    if (coup.Coup_special == petit_roque)
+    {
+        out << "0-0";
+    }
+    else if (coup.Coup_special == grand_roque)
+    {
+        out << "0-0-0";
+    }
+
+    else
+    {
+        string typee = coup.pieceJouee.type;
+        if (typee == "Pion")
+        {
+            if (coup.Taken != NULL)
+            {
+                char colonne_pion = coup.oldPosition.second + 96;
+                out << colonne_pion;
+            }
+        }
+        else
+        {
+            char premiere_lettre = (typee)[0];
+            out << premiere_lettre;
+        }
+
+        if (coup.Taken)
+        {
+            out << "x";
+        }
+        out << coup.newPosition;
+
+        if (coup.Coup_special == prise_en_passant)
+        {
+            out << "e.p";
+        }
+        else if (coup.Coup_special == promotion)
+        {
+            out << "=" << coup.Type_Promu[0];
+        }
+
+        if (coup.is_mat)
+        {
+            out << "#";
+        }
+        else if (coup.is_echec)
+        {
+            out << "+";
+        }
+    }
+    return out;
+}
+
+/////
 // class Echiquier
+/////
 
 Echiquier::Echiquier(int n)
 {
-    this->taille = n;
-    this->plateau = new Piece *[n * n];
+    taille = n;
+    plateau = new Piece *[n * n];
     for (int i = 0; i < n * n; i++)
     {
-        this->plateau[i] = NULL;
+        plateau[i] = NULL;
     }
+    roi_noir = NULL;
+    roi_blanc = NULL;
+    list<Coup> l_coups;
+    L_coup_depuis_dep = l_coups;
 }
 
 Echiquier::~Echiquier()
 {
     for (int i = 0; i < taille * taille; i++)
     {
-        delete plateau[i];
+        if (plateau[i] != NULL)
+            delete plateau[i];
     }
     delete[] plateau;
 }
@@ -310,6 +396,80 @@ ostream &operator<<(ostream &out, const pair<int, int> &pair)
     return out;
 }
 
+// pour TTT
+bool is_coup_gagnant_TTT(const Echiquier &plateauRef, bool couleur, const pair<int, int> &coor)
+{
+    Piece **plateau = plateauRef.plateau;
+    int taillep = plateauRef.taille;
+
+    // ligne
+    int ligne = coor.first;
+    int colonne = coor.second;
+    int p = 1;
+    int plac;
+
+    for (int j = 1; j <= 3; j++)
+    {
+        pair<int, int> coor(ligne, j);
+        plac = coor_to_pos(coor, taillep);
+        if (plateau[plac] != NULL && plateau[plac]->isWhite == couleur)
+        {
+            p++;
+        }
+    }
+    if (p == 3)
+        return true;
+
+    // colonne
+    int q = 1;
+    for (int i = 1; i <= 3; i++)
+    {
+        pair<int, int> coor(i, colonne);
+        plac = coor_to_pos(coor, taillep);
+        if (plateau[plac] != NULL && plateau[plac]->isWhite == couleur)
+            q++;
+    }
+
+    if (q == 3)
+        return true;
+
+    // diagonale aigu
+    if (ligne == colonne)
+    {
+        int r = 1;
+        for (int k = 1; k <= 3; k++)
+        {
+            pair<int, int> coor(k, k);
+            plac = coor_to_pos(coor, taillep);
+            if (plateau[plac] != NULL && plateau[plac]->isWhite == couleur)
+                r++;
+        }
+
+        if (r == 3)
+            return true;
+    }
+
+    // diagonale grave
+    if (colonne + ligne == 4)
+    {
+        int s = 1;
+        int j = 3;
+        for (int i = 1; i <= 3; i++)
+        {
+            pair<int, int> coor(i, j);
+            plac = coor_to_pos(coor, taillep);
+            if (i != ligne && plateau[plac] != NULL && plateau[plac]->isWhite == couleur) // c'est normal !!!
+                s++;
+            j -= 1;
+        }
+
+        if (s == 3)
+            return true;
+    }
+
+    return false;
+}
+
 //////
 // ALEA
 //////
@@ -335,84 +495,84 @@ void mise_en_place_echec_piece(Echiquier &Echi)
     for (int j = 1; j <= taillep; j++)
     {
         // blanc
-        Piece *pion = new Piece(is_white, pair<int, int>(2, j), "Pion");
+        Piece *pion = new Piece(is_white, false, pair<int, int>(2, j), "Pion");
         place = coor_to_pos(pair<int, int>(2, j), taillep);
         Echi.plateau[place] = pion;
 
         // noir
-        pion = new Piece(!is_white, pair<int, int>(7, j), "Pion");
+        pion = new Piece(!is_white, false, pair<int, int>(7, j), "Pion");
         place = coor_to_pos(pair<int, int>(7, j), taillep);
         Echi.plateau[place] = pion;
     }
 
     // tour
-    Piece *tour = new Piece(is_white, pair<int, int>(1, 1), "Tour");
+    Piece *tour = new Piece(is_white, false, pair<int, int>(1, 1), "Tour");
     place = coor_to_pos(pair<int, int>(1, 1), taillep);
     Echi.plateau[place] = tour;
 
-    tour = new Piece(is_white, pair<int, int>(1, 8), "Tour");
+    tour = new Piece(is_white, false, pair<int, int>(1, 8), "Tour");
     place = coor_to_pos(pair<int, int>(1, 8), taillep);
     Echi.plateau[place] = tour;
 
-    tour = new Piece(!is_white, pair<int, int>(8, 1), "Tour");
+    tour = new Piece(!is_white, false, pair<int, int>(8, 1), "Tour");
     place = coor_to_pos(pair<int, int>(8, 1), taillep);
     Echi.plateau[place] = tour;
 
-    tour = new Piece(!is_white, pair<int, int>(8, 8), "Tour");
+    tour = new Piece(!is_white, false, pair<int, int>(8, 8), "Tour");
     place = coor_to_pos(pair<int, int>(8, 8), taillep);
     Echi.plateau[place] = tour;
 
     // Cavalier
-    Piece *cavalier = new Piece(is_white, pair<int, int>(1, 2), "Cavalier");
+    Piece *cavalier = new Piece(is_white, false, pair<int, int>(1, 2), "Cavalier");
     place = coor_to_pos(pair<int, int>(1, 2), taillep);
     Echi.plateau[place] = cavalier;
 
-    cavalier = new Piece(is_white, pair<int, int>(1, 7), "Cavalier");
+    cavalier = new Piece(is_white, false, pair<int, int>(1, 7), "Cavalier");
     place = coor_to_pos(pair<int, int>(1, 7), taillep);
     Echi.plateau[place] = cavalier;
 
-    cavalier = new Piece(!is_white, pair<int, int>(8, 2), "Cavalier");
+    cavalier = new Piece(!is_white, false, pair<int, int>(8, 2), "Cavalier");
     place = coor_to_pos(pair<int, int>(8, 2), taillep);
     Echi.plateau[place] = cavalier;
 
-    cavalier = new Piece(!is_white, pair<int, int>(8, 7), "Cavalier");
+    cavalier = new Piece(!is_white, false, pair<int, int>(8, 7), "Cavalier");
     place = coor_to_pos(pair<int, int>(8, 7), taillep);
     Echi.plateau[place] = cavalier;
 
     // fou
-    Piece *fou = new Piece(is_white, pair<int, int>(1, 3), "Fou");
+    Piece *fou = new Piece(is_white, false, pair<int, int>(1, 3), "Fou");
     place = coor_to_pos(pair<int, int>(1, 3), taillep);
     Echi.plateau[place] = fou;
 
-    fou = new Piece(is_white, pair<int, int>(1, 6), "Fou");
+    fou = new Piece(is_white, false, pair<int, int>(1, 6), "Fou");
     place = coor_to_pos(pair<int, int>(1, 6), taillep);
     Echi.plateau[place] = fou;
 
-    fou = new Piece(!is_white, pair<int, int>(8, 3), "Fou");
+    fou = new Piece(!is_white, false, pair<int, int>(8, 3), "Fou");
     place = coor_to_pos(pair<int, int>(8, 3), taillep);
     Echi.plateau[place] = fou;
 
-    fou = new Piece(!is_white, pair<int, int>(8, 6), "Fou");
+    fou = new Piece(!is_white, false, pair<int, int>(8, 6), "Fou");
     place = coor_to_pos(pair<int, int>(8, 6), taillep);
     Echi.plateau[place] = fou;
 
     // roi
-    Piece *roi = new Piece(is_white, pair<int, int>(1, 5), "Roi");
+    Piece *roi = new Piece(is_white, false, pair<int, int>(1, 5), "Roi");
     place = coor_to_pos(pair<int, int>(1, 5), taillep);
     Echi.plateau[place] = roi;
     Echi.roi_blanc = roi;
 
-    roi = new Piece(!is_white, pair<int, int>(8, 5), "Roi");
+    roi = new Piece(!is_white, false, pair<int, int>(8, 5), "Roi");
     place = coor_to_pos(pair<int, int>(8, 5), taillep);
     Echi.plateau[place] = roi;
     Echi.roi_noir = roi;
 
     // dame
-    Piece *Dame = new Piece(is_white, pair<int, int>(1, 4), "Dame");
+    Piece *Dame = new Piece(is_white, false, pair<int, int>(1, 4), "Dame");
     place = coor_to_pos(pair<int, int>(1, 4), taillep);
     Echi.plateau[place] = Dame;
 
-    Dame = new Piece(!is_white, pair<int, int>(8, 4), "Dame");
+    Dame = new Piece(!is_white, false, pair<int, int>(8, 4), "Dame");
     place = coor_to_pos(pair<int, int>(8, 4), taillep);
     Echi.plateau[place] = Dame;
 }

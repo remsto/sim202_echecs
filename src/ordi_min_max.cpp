@@ -6,173 +6,194 @@ using namespace std;
 // POSITION
 ////
 
-Position::Position(Echiquier &plateau, ListeCoups &coups, Position *positionSoeur, Position *positionFille, bool joueurCoup, int num_tour)
+Position::Position(Echiquier *plateau, list<Coup> Lcoups, Position *positionSoeur, Position *positionFille, bool joueur_courant, int num_tour, bool joueur, int valeur)
 {
-    plateauRef = plateau;
-    joueur = joueurCoup;
-    soeur = positionSoeur;
-    fille = positionFille;
-    coupsPrecedents = coups;
-    num_tour_de_jeu = num_tour;
+    PlateauRef = plateau;
+    CoupsPrecedents = Lcoups;
+    Soeur = positionSoeur;
+    Fille = positionFille;
+    Joueur_courant = joueur_courant;
+    Num_tour_de_jeu = num_tour;
+    Joueur = joueur;
+    ValeurMinMax = valeur;
 }
 
-Position::~Position() // a faire
+Position::~Position()
 {
-
-    coupsPrecedents.~ListeCoups();
-    if (soeur != NULL)
+    if (Soeur != NULL)
     {
-        soeur->~Position();
+        delete Soeur;
     }
-    if (fille != NULL)
+    if (Fille != NULL)
     {
-        fille->~Position();
+        delete Fille;
     }
-} 
+}
 
 // pour TTT a cause de coups possibles
 void Position::generateur(int profondeur)
 {
-
-    if (profondeur != 0)
+    Position *current = NULL;
+    list<Coup>::iterator it;
+    if (profondeur == 0)
     {
-        actualisePlateau(plateauRef, coupsPrecedents);
-        //actualise valeur de 1ere soeur
-        set_valeur(this); // à coder pour les échecs
-        ListeCoups *coupsPossibles = coupsPossiblesTTT(plateauRef, joueur, num_tour_de_jeu + 1); 
-    
-        resetPlateau(plateauRef, coupsPrecedents);
+        set_valeur();
+    }
+    else if (!CoupsPrecedents.empty() && CoupsPrecedents.back().is_mat)
+        set_valeur();
+    else
+    {
+        actualisePlateau(*PlateauRef, CoupsPrecedents);
+        list<Coup> coup_poss = coupsPossiblesTTT(*PlateauRef, Joueur_courant, Num_tour_de_jeu + 1);
+        // cout << coup_poss;
+        resetPlateau(*PlateauRef, CoupsPrecedents);
+        if (coup_poss.empty())
+            set_valeur();
+        else
+        {
+            int valeur;
+            if (Joueur == Joueur_courant)
+                valeur = -inf;
+            else
+                valeur = inf;
+            //////resetPlateau(*plateauRef, coupsPrecedents); !!!!!!
 
-        // CREATION 1ere FILLE
-        // copie coupsPrecedents
-        ListeCoups coupsPrecedentsCurrent(coupsPrecedents);
-        // Le 1er coupPossible devient le dernier coupPrecedent
-        (coupsPrecedentsCurrent.last)->Next = coupsPossibles->first;
-        coupsPrecedentsCurrent.last = coupsPossibles->first;
-        coupsPrecedentsCurrent.nbCoups++;
-
-        this->fille = new Position(plateauRef, coupsPrecedentsCurrent, NULL, NULL, !joueur, num_tour_de_jeu + 1);
-        Position *current = this->fille;
-
-        for (int i = 0; i < coupsPossibles->nbCoups; i++)
-        { // maj coupsPossibles
-            coupsPossibles->first = (coupsPossibles->first)->Next;
-            coupsPossibles->nbCoups = coupsPossibles->nbCoups - 1;
-
-            // cps = this.cp
-            ListeCoups coupsPrecedentsSoeur(coupsPrecedents);
-
-            // cps.last.next = dernier coup = b
-            (coupsPrecedentsSoeur.last)->Next = coupsPossibles->first;
-            // cps.last = b
-            coupsPrecedentsSoeur.last = (coupsPrecedentsSoeur.last)->Next;
-            coupsPrecedentsSoeur.nbCoups++;
-
-            // CREATION SOEUR
-            current->soeur = new Position(plateauRef, coupsPrecedentsSoeur, NULL, NULL, !joueur, num_tour_de_jeu + 1);
-
-            // Passer à la suivante
-
-            current = current->soeur;
-
-            //set la valeur soeur
-            set_valeur(current);
-
-            // Appeler récursion sur current
-            current->generateur(profondeur - 1);
+            // CREATION des filles
+            for (it = coup_poss.begin(); it != coup_poss.end(); it++)
+            {
+                // copie coupsPrecedents
+                list<Coup> CPCurrent = CoupsPrecedents;
+                // Le 1er coupPossible devient le dernier coupPrecedent
+                CPCurrent.push_back(*it);
+                // cout << endl << CPCurrent;
+                if (current == NULL)
+                {
+                    Fille = new Position(PlateauRef, CPCurrent, NULL, NULL, !Joueur_courant, Num_tour_de_jeu + 1, Joueur);
+                    current = Fille;
+                }
+                else
+                {
+                    current->Soeur = new Position(PlateauRef, CPCurrent, NULL, NULL, !Joueur_courant, Num_tour_de_jeu + 1, Joueur);
+                    current = current->Soeur;
+                }
+                // Appeler récursion sur current
+                current->generateur(profondeur - 1);
+                if (Joueur == Joueur_courant && current->ValeurMinMax > valeur)
+                    valeur = current->ValeurMinMax;
+                else if (Joueur != Joueur_courant && current->ValeurMinMax < valeur)
+                    valeur = current->ValeurMinMax;
+            }
+            ValeurMinMax = valeur;
         }
     }
 }
 
-void annexe(int profondeur, ListeCoups coupsPossibles) //+ Position pos)
+void Position::set_valeur() // actuellement pour le TTT
 {
-    if (coupsPossibles.first != coupsPossibles.last)
+    int taillep = PlateauRef->taille;
+    if (taillep == 3) // TTT
     {
+        if (CoupsPrecedents.empty())
+        {
+            cout << "ca ne devrait pas arriver \n";
+        }
+        else
+        {
+            Coup coup = CoupsPrecedents.back();
+            if (coup.is_mat && Joueur_courant != Joueur)
+                ValeurMinMax = inf;
+            else if (coup.is_mat && Joueur_courant == Joueur)
+                ValeurMinMax = -inf;
+            else
+                ValeurMinMax = 0;
+        }
     }
-    if ((profondeur != 0))
+    else /// pour les echecs
     {
-        // créer fille, appeler annexe dessus (profondeur -1)
     }
 }
 
-int Position::set_valeur()
+/*
+bool Position::estGagnante()
 {
-    if (this->estGagnante())
+    bool is_coup_gagne = false;
+
+    if (!CoupsPrecedents.empty())
     {
-        return inf;
+        actualisePlateau(*PlateauRef, CoupsPrecedents);
+
+        // vérifier comme des bourrins TicTacToe (le dernier coup est decisif)
+        Coup dernierCoup = CoupsPrecedents.back();
+        is_coup_gagne = is_coup_gagnant_TTT(*plateauRef, dernierCoup);
+
+        // On réinitialise le plateau
+        resetPlateau(*plateauRef, coupsPrecedents);
+    }
+    return is_coup_gagne;
+}
+*/
+
+Coup *coup_min_max(Echiquier *EchiTTT, bool is_white_courant, int num_tour, int profondeur)
+{
+    list<Coup> list_vide;
+    Position position(EchiTTT, list_vide, NULL, NULL, is_white_courant, num_tour, is_white_courant);
+    position.generateur(profondeur);
+    int valeurcible = position.ValeurMinMax;
+    // position.MinMax(position.Joueur);
+    Position *current = position.Fille;
+
+    while (current != NULL)
+    {
+        if (current->ValeurMinMax == valeurcible)
+        {
+            Coup *coup = new Coup(current->CoupsPrecedents.back());
+            return coup;
+        }
+        current = current->Soeur;
+    }
+    return NULL;
+}
+
+/*
+void Position::MinMax(bool is_white_current)
+{
+    // Si position terminale
+    if (this->fille == NULL)
+    {
+        this->valeurMinMax = this->valeurPosition;
     }
     else
     {
-        return 0;
-    }
-}
-
-bool Position::estGagnante()
-{
-    actualisePlateau(plateauRef, coupsPrecedents);
-
-    // vérifier comme des bourrins TicTacToe (le dernier coup est decisif)
-    Coup *dernierCoup = coupsPrecedents.last;
-    bool is_coup_gagne = is_coup_gagnant_TTT(plateauRef, *dernierCoup);
-
-    // On réinitialise le plateau
-    resetPlateau(plateauRef, coupsPrecedents);
-    return is_coup_gagne;
-}
-
-
-Coup coup_min_max(Position position, int profondeur){
-    // ARRANGER LES "." ET "->", COMPLETEMENT HASARDEUX
-    position.generateur(profondeur); //je ne sais pas appeler cette méthode
-    MinMax(position); // à coder
-    Position *current = position->fille;
-    Coup coup = (current->coupsPrecedents).last;
-    while(current->soeur != NULL){ // Parcours de la génération fille
-        if(position.joueur){
-            if(current->valeurMinMax > (current->soeur).valeurMinMax){
-                coup = ((current->soeur)->coupsPrecedents).last;
-            }
-        }
-        else{
-            if(current->valeurMinMax < (current->soeur).valeurMinMax){
-                coup = ((current->soeur)->coupsPrecedents).last;
-            }
-        }
-        current = current->soeur;
-    }
-    return coup
-
-}
-
-void MinMax(Position position){
-    // Si position terminale
-    if(position.fille == NULL){
-        position.valeurMinMax = position.valeurPosition;
-    }
-    else{
         // Si le joueur est le joueur en train de jouer
-        
-        Position current = position->fille; 
-        MinMax(current);
+
+        Position *current = this->fille;
+        current->MinMax(is_white_current);
         int temp = current->valeurMinMax;
-        while(current->soeur != NULL){
+        while (current->soeur != NULL)
+        {
             current = current->soeur;
-            MinMax(current);
-            
-            if(position.joueur){
-                // Si joueur 1, on cherche le max  
+            current->MinMax(is_white_current);
+
+            if (this->joueur == is_white_current)
+            {
+                // Si le joueur du noeud est celui qui joue, MAX
                 // VERIFIER false OU true
-                if(current->valeurMinMax > temp){
-                    temp = current->valeurMinMax;
+                if (current->valeurPosition > temp)
+                {
+                    cout << "RE REFLECHIS";
+                    temp = current->valeurPosition;
                 }
             }
-            else{
-                // Si joueur 2, on cherche le min
-                if(current->valeurMinMax < temp){
-                    temp = current->valeurMinMax;
+            else
+            {
+                // Si le joueur du noeud N'est PAS celui qui joue, MIN
+                if (current->valeurPosition < temp)
+                {
+                    temp = current->valeurPosition;
                 }
             }
         }
-        position.valeurMinMax = MinMax
+        this->valeurMinMax = temp;
     }
 }
+*/
