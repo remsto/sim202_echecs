@@ -31,24 +31,29 @@ Position::~Position()
 }
 
 // pour TTT a cause de coups possibles
-void Position::generateur(int profondeur)
+void Position::generateur(int profondeur, int gammap, int gammac)
 {
+    int taille = PlateauRef->taille;
     Position *current = NULL;
     list<Coup>::iterator it;
     if (profondeur == 0)
     {
-        set_valeur();
+        set_valeur(gammap, gammac);
     }
     else if (!CoupsPrecedents.empty() && CoupsPrecedents.back().is_mat)
-        set_valeur();
+        set_valeur(gammap, gammac);
     else
     {
         actualisePlateau(*PlateauRef, CoupsPrecedents);
-        list<Coup> coup_poss = coupsPossiblesTTT(*PlateauRef, Joueur_courant, Num_tour_de_jeu + 1);
+        list<Coup> coup_poss;
+        if (taille == 3)
+            coup_poss = coupsPossiblesTTT(*PlateauRef, Joueur_courant, Num_tour_de_jeu + 1);
+        else if (taille == 8)
+            coup_poss = coupsPossibles(*PlateauRef, Joueur_courant, Num_tour_de_jeu + 1);
         // cout << coup_poss;
         resetPlateau(*PlateauRef, CoupsPrecedents);
         if (coup_poss.empty())
-            set_valeur();
+            set_valeur(0, 0);
         else
         {
             int valeur;
@@ -77,7 +82,7 @@ void Position::generateur(int profondeur)
                     current = current->Soeur;
                 }
                 // Appeler récursion sur current
-                current->generateur(profondeur - 1);
+                current->generateur(profondeur - 1, gammap, gammac);
                 if (Joueur == Joueur_courant && current->ValeurMinMax > valeur)
                     valeur = current->ValeurMinMax;
                 else if (Joueur != Joueur_courant && current->ValeurMinMax < valeur)
@@ -88,7 +93,7 @@ void Position::generateur(int profondeur)
     }
 }
 
-void Position::set_valeur() // actuellement pour le TTT
+void Position::set_valeur(int gammap, int gammac) // actuellement pour le TTT
 {
     int taillep = PlateauRef->taille;
     if (taillep == 3) // TTT
@@ -110,6 +115,69 @@ void Position::set_valeur() // actuellement pour le TTT
     }
     else /// pour les echecs
     {
+        if (CoupsPrecedents.empty())
+        {
+            cout << "ca ne devrait pas arriver \n";
+        }
+        else if (gammap == 0 && gammac == 0) // pat
+            ValeurMinMax = 0;
+        else
+        {
+            Coup coup = CoupsPrecedents.back();
+            if (coup.is_mat && Joueur_courant != Joueur)
+                ValeurMinMax = inf;
+            else if (coup.is_mat && Joueur_courant == Joueur)
+                ValeurMinMax = -inf;
+            else
+            {
+                actualisePlateau(*PlateauRef, CoupsPrecedents);
+                int valeur_piece_Joueur = 0;
+                int valeur_piece_adv = 0;
+                int nombre_case_Joueur = 0;
+                int nombre_case_adv = 0;
+
+                for (int i = 1; i <= 8; i++)
+                {
+                    for (int j = 1; j <= 8; j++)
+                    {
+                        int place = coor_to_pos(pair<int, int>(i, j), taillep);
+                        Piece *piece_current = PlateauRef->plateau[place];
+                        if (piece_current != NULL && piece_current->isWhite == Joueur)
+                        {
+                            valeur_piece_Joueur += piece_current->valeur;
+                            list<Deplac_rel> dep_hyp = piece_current->deplac_relatif;
+                            list<Deplac_rel>::iterator it;
+                            for (it = dep_hyp.begin(); it != dep_hyp.end(); it++)
+                            {
+                                CoupSpecial coup_spe = Special(*PlateauRef, piece_current, *it, Num_tour_de_jeu);
+                                string type_promu = "Pion";
+                                if (coup_spe == promotion)
+                                    type_promu = "Tour";
+                                if (is_legal(*PlateauRef, piece_current, *it, Num_tour_de_jeu, coup_spe, type_promu))
+                                    nombre_case_Joueur += 1;
+                            }
+                        }
+                        else if (piece_current != NULL && piece_current->isWhite != Joueur)
+                        {
+                            valeur_piece_adv += piece_current->valeur;
+                            list<Deplac_rel> dep_hyp = piece_current->deplac_relatif;
+                            list<Deplac_rel>::iterator it;
+                            for (it = dep_hyp.begin(); it != dep_hyp.end(); it++)
+                            {
+                                CoupSpecial coup_spe = Special(*PlateauRef, piece_current, *it, Num_tour_de_jeu);
+                                string type_promu = "Pion";
+                                if (coup_spe == promotion)
+                                    type_promu = "Tour";
+                                if (is_legal(*PlateauRef, piece_current, *it, Num_tour_de_jeu, coup_spe, type_promu))
+                                    nombre_case_adv += 1;
+                            }
+                        }
+                    }
+                }
+                resetPlateau(*PlateauRef, CoupsPrecedents);
+                ValeurMinMax = gammap * (valeur_piece_Joueur - valeur_piece_adv) + gammac * (nombre_case_Joueur - nombre_case_adv);
+            }
+        }
     }
 }
 
@@ -133,13 +201,13 @@ bool Position::estGagnante()
 }
 */
 
-Coup *coup_min_max(Echiquier *EchiTTT, bool is_white_courant, int num_tour, int profondeur)
+Coup *coup_min_max(Echiquier *EchiTTT, bool is_white_courant, int num_tour, int profondeur, int gammap, int gammac)
 {
     list<Coup> list_vide;
     Position position(EchiTTT, list_vide, NULL, NULL, is_white_courant, num_tour, is_white_courant);
-    position.generateur(profondeur);
+    position.generateur(profondeur, gammap, gammac);
     int valeurcible = position.ValeurMinMax;
-    // position.MinMax(position.Joueur);
+    // cout << valeurcible << endl;
     Position *current = position.Fille;
 
     while (current != NULL)
@@ -153,47 +221,3 @@ Coup *coup_min_max(Echiquier *EchiTTT, bool is_white_courant, int num_tour, int 
     }
     return NULL;
 }
-
-/*
-void Position::MinMax(bool is_white_current)
-{
-    // Si position terminale
-    if (this->fille == NULL)
-    {
-        this->valeurMinMax = this->valeurPosition;
-    }
-    else
-    {
-        // Si le joueur est le joueur en train de jouer
-
-        Position *current = this->fille;
-        current->MinMax(is_white_current);
-        int temp = current->valeurMinMax;
-        while (current->soeur != NULL)
-        {
-            current = current->soeur;
-            current->MinMax(is_white_current);
-
-            if (this->joueur == is_white_current)
-            {
-                // Si le joueur du noeud est celui qui joue, MAX
-                // VERIFIER false OU true
-                if (current->valeurPosition > temp)
-                {
-                    cout << "RE REFLECHIS";
-                    temp = current->valeurPosition;
-                }
-            }
-            else
-            {
-                // Si le joueur du noeud N'est PAS celui qui joue, MIN
-                if (current->valeurPosition < temp)
-                {
-                    temp = current->valeurPosition;
-                }
-            }
-        }
-        this->valeurMinMax = temp;
-    }
-}
-*/

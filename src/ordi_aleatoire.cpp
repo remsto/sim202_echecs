@@ -25,9 +25,9 @@ Coup *coup_aleatoire_echecs(Echiquier &Echi, bool is_white, int num_tour)
 {
     list<Coup> Liste_possible = coupsPossibles(Echi, is_white, num_tour);
     int nbc = Liste_possible.size();
-    cout << "Il existe " << nbc << " coups possibles.\n";
+    // cout << "Il existe " << nbc << " coups possibles.\n";
     int choix_coup = tirage_alea_entier(1, nbc);
-    cout << "Le coup aléa choisi est le numéro " << choix_coup << endl;
+    // cout << "Le coup aléa choisi est le numéro " << choix_coup << endl;
     list<Coup>::iterator it;
     it = Liste_possible.begin();
     for (int i = 1; i < choix_coup; i++)

@@ -25,13 +25,13 @@ public:
 
     Position(Echiquier *plateau, list<Coup> coups, Position *positionSoeur, Position *positionFille, bool joueur_courant, int num_tour, bool joueur, int valeur = 0);
     // bool estGagnante();
-    void set_valeur(); // si on arrive à une fille, on apelle cette fonction
-    void generateur(int profondeur);
+    void set_valeur(int gammap, int gammac); // si on arrive à une fille, on apelle cette fonction
+    void generateur(int profondeur, int gammap = 0, int gammac = 0);
     // void MinMax(bool is_white_current);
 
     ~Position();
 };
 
-Coup *coup_min_max(Echiquier *EchiTTT, bool is_white_courant, int num_tour, int profondeur);
+Coup *coup_min_max(Echiquier *EchiTTT, bool is_white_courant, int num_tour, int profondeur, int gammap = 0, int gammac = 0);
 
 #endif

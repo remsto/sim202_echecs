@@ -1,12 +1,11 @@
 #include <string>
 #include <iostream>
 using namespace std;
-#include "ordi_aleatoire.hpp"
-#include "ordi_min_max.hpp"
-//#define std::cout std::std::cout
+#include "partieechecs.hpp"
+
 #define taillepp 8
 
-int main2()
+int partie_echecs(int gammap, int gammac)
 {
 
 	bool is_fini = false;
@@ -30,6 +29,7 @@ int main2()
 	bool is_egalite_materiel = false;
 	bool is_pat = false;
 	bool is_echec_perpetuel = false;
+	int profondeur = 0;
 	bool is_triple_rep = false;
 	bool is_50_coups = false;
 
@@ -46,7 +46,11 @@ int main2()
 	std::cout << "Pour chaque joueur, entrez un entier sachant que : \n";
 	std::cout << "1: Joueur humain \n";
 	std::cout << "2: Ordi aléatoire \n";
-	std::cout << "3: Ordi avec min-max profondeur ... \n";
+	std::cout << "3: Ordi avec min-max profondeur 1\n";
+	std::cout << "4: Ordi avec min-max profondeur 2\n";
+	std::cout << "5: Ordi avec min-max profondeur 3\n";
+	std::cout << "6: Ordi avec min-max profondeur 4\n";
+	std::cout << "7: Ordi avec min-max profondeur 5\n";
 	int joueur1, joueur2;
 	std::cout << "Qui est le joueur 1 ?";
 	cin >> joueur1;
@@ -208,7 +212,6 @@ int main2()
 					}
 				}
 			}
-			std::cout << piece_jouee->position_coor.first << "," << piece_jouee->position_coor.second << endl;
 
 			Piece *piece_prise = taken_coup(*Echi, piece_jouee, dep, coup_spe);
 			// std::cout << "piece prise ok\n";
@@ -221,7 +224,7 @@ int main2()
 		}
 
 		//  C'est à l'ordi aléatoire de jouer, , choix du coup !
-		else if (joueur_courant == 2)
+		else
 		{
 			std::cout << "C'est au tour des ";
 			if (is_white_courant)
@@ -234,19 +237,55 @@ int main2()
 			}
 			std::cout << " Voici le plateau : \n";
 			Echi->affiche();
-			coupjoue = coup_aleatoire_echecs(*Echi, is_white_courant, num_tour);
-			std::cout << "Le coup est : " << *coupjoue << "\n";
-		}
 
-		// C'est à l'ordi min_max de profondeur ?? de jouer,, choix du coup !
-		else if (joueur_courant == 3)
-		{
-		}
+			if (joueur_courant == 2)
+			{
+				coupjoue = coup_aleatoire_echecs(*Echi, is_white_courant, num_tour);
+				std::cout << "Le coup est : " << *coupjoue << "\n";
+			}
 
-		else
-		{
-			std::cout << "le joueur choisi n'existe pas, recommencez \n";
-			return 0;
+			// C'est à l'ordi min_max de profondeur .. de jouer,, choix du coup !
+			else if (joueur_courant == 3)
+			{
+				profondeur = 1;
+				cout << "Le joueur minmax recherche un coup de profondeur" << profondeur << " ... ";
+				coupjoue = coup_min_max(Echi, is_white_courant, num_tour, profondeur, gammap, gammac);
+				cout << "Au tour " << num_tour << ", le coup du joueur " << (is_white_courant ? "blanc" : "noir") << " est : " << *coupjoue << endl;
+			}
+			else if (joueur_courant == 4)
+			{
+				profondeur = 2;
+				cout << "Le joueur minmax recherche un coup de profondeur" << profondeur << " ... ";
+				coupjoue = coup_min_max(Echi, is_white_courant, num_tour, profondeur, gammap, gammac);
+				cout << "Au tour " << num_tour << ", le coup du joueur " << (is_white_courant ? "blanc" : "noir") << " est : " << *coupjoue << endl;
+			}
+			else if (joueur_courant == 5)
+			{
+				profondeur = 3;
+				cout << "Le joueur minmax recherche un coup de profondeur" << profondeur << " ... ";
+				coupjoue = coup_min_max(Echi, is_white_courant, num_tour, profondeur, gammap, gammac);
+				cout << "Au tour " << num_tour << ", le coup du joueur " << (is_white_courant ? "blanc" : "noir") << " est : " << *coupjoue << endl;
+			}
+			else if (joueur_courant == 6)
+			{
+				profondeur = 4;
+				cout << "Le joueur minmax recherche un coup de profondeur" << profondeur << " ... ";
+				coupjoue = coup_min_max(Echi, is_white_courant, num_tour, profondeur, gammap, gammac);
+				cout << "Au tour " << num_tour << ", le coup du joueur " << (is_white_courant ? "blanc" : "noir") << " est : " << *coupjoue << endl;
+			}
+			else if (joueur_courant == 7)
+			{
+				profondeur = 5;
+				cout << "Le joueur minmax recherche un coup de profondeur" << profondeur << " ... ";
+				coupjoue = coup_min_max(Echi, is_white_courant, num_tour, profondeur, gammap, gammac);
+				cout << "Au tour " << num_tour << ", le coup du joueur " << (is_white_courant ? "blanc" : "noir") << " est : " << *coupjoue << endl;
+			}
+
+			else
+			{
+				std::cout << "le joueur choisi n'existe pas, recommencez \n";
+				return 0;
+			}
 		}
 
 		// on joue le coup
@@ -396,5 +435,6 @@ int main2()
 
 		std::cout << Echi->L_coup_depuis_dep;
 	}
+	delete Echi;
 	return 0;
 }

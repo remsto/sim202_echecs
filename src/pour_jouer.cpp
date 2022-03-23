@@ -42,7 +42,7 @@ list<Coup> coupsPossiblesTTT(const Echiquier &plateau, bool isWhite, int num_tou
             if (plateau.plateau[coor_to_pos(pair<int, int>(i, j), taillep)] == NULL)
             {
                 bool is_mat = is_coup_gagnant_TTT(plateau, isWhite, pair<int, int>(i, j));
-                // faut il faire un new ??
+
                 Coup coup_joue(isWhite, Piece(isWhite), pair<int, int>(i, j), pair<int, int>(0, 0), num_tour, NULL, non_special, "Pion", false, is_mat);
                 list_coup.push_back(coup_joue);
             }
@@ -96,23 +96,17 @@ list<Coup> coupsPossibles(Echiquier &plateau, bool isWhit, int num_tour)
 
                         if ((is_legal(plateau, piece_a_jouer, *it, num_tour, coup_special, type_promu)))
                         {
-                            // cout << "etape 4 ter, piece a jouer" << *piece_a_jouer << "pos " << piece_a_jouer->position_coor.first << "," << piece_a_jouer->position_coor.second << "," << new_pos.first << "," << new_pos.second << "piece promu" << *promu << endl;
                             if ((!is_Echec(plateau, piece_a_jouer, *it, num_tour, isWhit, type_promu, coup_special)))
                             {
-                                // new ???
+
                                 Piece *taken = taken_coup(plateau, piece_a_jouer, *it, coup_special);
-                                cout << *piece_a_jouer;
+
                                 bool is_ech = is_Echec(plateau, piece_a_jouer, *it, num_tour, !isWhit, type_promu, coup_special);
-                                cout << "interetavant" << *piece_a_jouer;
                                 bool is_mat = is_Mat(plateau, piece_a_jouer, *it, num_tour, type_promu, coup_special, is_ech);
                                 piece_a_jouer = plateau.plateau[pos_piece];
-                                cout << "interessent" << *piece_a_jouer;
                                 Coup coup_joue(isWhit, *piece_a_jouer, it->coor + piece_a_jouer->position_coor, piece_a_jouer->position_coor, num_tour, taken, coup_special, type_promu, is_ech, is_mat);
                                 list_coup.push_back(coup_joue);
-
-                                cout << "on ajoute le coup " << coup_joue << endl;
                             }
-                            cout << "etape 5sortie ";
                         }
                         pour_boucle_prom += 1;
                     }
@@ -121,7 +115,7 @@ list<Coup> coupsPossibles(Echiquier &plateau, bool isWhit, int num_tour)
             }
         }
     }
-    // new ???
+
     return list_coup;
 }
 
@@ -173,8 +167,6 @@ bool is_coupsPossibles(Echiquier &plateau, bool isWhit, int num_tour)
                         bool is_ech = is_Echec(plateau, piece_a_jouer1, *dep_current, num_tour, isWhit, type_promu, coup_special);
                         if (!is_ech)
                         {
-
-                            cout << "l'un des coups possibles est de bouger" << *piece_a_jouer1 << dep_current->coor.first << "," << dep_current->coor.second;
                             return true;
                         }
                     }
@@ -544,7 +536,9 @@ void resetPlateau(Echiquier &plateau, const list<Coup> &coupsPrecedents)
                 else if (coup_special == promotion)
                 {
                     if (piece_prise != NULL)
+                    {
                         plateau.plateau[coor_to_pos(news, taillep)] = new Piece(*piece_prise);
+                    }
 
                     string old_type = "Pion";
                     actualise_type(*plateau.plateau[coor_to_pos(old, taillep)], old_type);
@@ -552,7 +546,9 @@ void resetPlateau(Echiquier &plateau, const list<Coup> &coupsPrecedents)
                 else // non_special
                 {
                     if (piece_prise != NULL)
+                    {
                         plateau.plateau[coor_to_pos(news, taillep)] = new Piece(*piece_prise);
+                    }
                 }
 
                 plateau.L_coup_depuis_dep.pop_back();
@@ -613,7 +609,9 @@ void resetPlateau(Echiquier &plateau, const Coup &coup_jouee)
         else if (coup_special == promotion)
         {
             if (piece_prise != NULL)
+            {
                 plateau.plateau[coor_to_pos(news, taillep)] = new Piece(*piece_prise);
+            }
 
             string old_type = "Pion";
             actualise_type(*plateau.plateau[coor_to_pos(old, taillep)], old_type);
@@ -621,7 +619,9 @@ void resetPlateau(Echiquier &plateau, const Coup &coup_jouee)
         else // non_special
         {
             if (piece_prise != NULL)
+            {
                 plateau.plateau[coor_to_pos(news, taillep)] = piece_prise;
+            }
             else if (old != news)
                 plateau.plateau[coor_to_pos(news, taillep)] = NULL;
         }
@@ -998,9 +998,6 @@ bool is_Mat(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel dep_current, in
         //! is_Echec(plateau, piece_a_jouer, dep_current, num_tour, !couleur_joueur, type_promu, coup_special)) // pas opti !
         return false;
 
-    cout << "on rentre dans mat 1";
-    cout << *piece_a_jouer;
-    plateau.affiche();
     Piece *roi_ennemi = ((!couleur_joueur) ? plateau.roi_blanc : plateau.roi_noir);
     bool couleur_roi_ennemi = roi_ennemi->isWhite;
 
@@ -1008,9 +1005,6 @@ bool is_Mat(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel dep_current, in
 
     Coup coup_jouee(couleur_joueur, piece_a_jouer, new_position, piece_a_jouer->position_coor, num_tour, taken_coup(plateau, piece_a_jouer, dep_current, coup_special), coup_special, type_promu, false, false); // a voir pour les deux derniers
     actualisePlateau(plateau, coup_jouee);
-    cout << "on rentre dans mat 2";
-    cout << *piece_a_jouer;
-    plateau.affiche();
     // plateau.affiche();
 
     // TOUT CA SE FAIT EN UNE BOUCLE
@@ -1018,17 +1012,11 @@ bool is_Mat(Echiquier &plateau, Piece *piece_a_jouer, Deplac_rel dep_current, in
     //  check si le roi peut bouger sans etre ensuite en echec
     //  check si une pièce ennemi autre le roi peut se mettre enstre les pièces ou une piece peut graille la pièce = si le roi est toujours en echec
     bool is_cp_poss = is_coupsPossibles(plateau, couleur_roi_ennemi, num_tour);
-    cout << "on rentre dans mat 2bis";
     if (is_cp_poss)
     {
-        cout << "on rentre dans mat 3 ";
         resetPlateau(plateau, coup_jouee);
-        cout << "on sort de mat 1";
-        // cout << *piece_a_jouer;
         return false;
     }
-    cout << "on rentre dans mat 4";
     resetPlateau(plateau, coup_jouee);
-    cout << "on sort de mat 2";
     return true;
 }

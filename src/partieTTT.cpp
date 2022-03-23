@@ -1,15 +1,14 @@
 #include <iostream>
 using namespace std;
-#include "ordi_aleatoire.hpp"
-#include "ordi_min_max.hpp"
+#include "partieTTT.hpp"
 //#define cout std::cout
 #define taillepp 3
 
-int main()
+int partie_morpion()
 {
 
     bool is_fini = false;
-    Echiquier *EchiTTT = new Echiquier(taillepp);
+    Echiquier *EchiTTT = new Echiquier(3);
     int taillep = EchiTTT->taille;
     int num_tour = 0;
     char ligne_char;
@@ -23,7 +22,6 @@ int main()
     bool is_white_courant;
     int profondeur;
     pair<int, int> p;
-    int gagnant;
 
     Coup *coupjoue;
     Piece *piece_jouee;
@@ -148,8 +146,9 @@ int main()
                 }
             }
 
-            piece_jouee = new Piece(is_white_courant);
-            coupjoue = new Coup(is_white_courant, *piece_jouee, p, piece_jouee->position_coor, num_tour);
+            piece_jouee = new Piece(is_white_courant, 1, p, "Pion");
+            bool is_ma = is_coup_gagnant_TTT(*EchiTTT, is_white_courant, p);
+            coupjoue = new Coup(is_white_courant, *piece_jouee, p, piece_jouee->position_coor, num_tour, NULL, non_special, "Pion", false, is_ma);
             cout << "Le coup est : " << *coupjoue << "\n";
         }
 
@@ -191,7 +190,7 @@ int main()
         }
         else if (joueur_courant == 7)
         {
-            profondeur = 4;
+            profondeur = 5;
             cout << "Le joueur minmax recherche un coup de profondeur" << profondeur << " ... ";
             coupjoue = coup_min_max(EchiTTT, is_white_courant, num_tour, profondeur);
             cout << "Au tour " << num_tour << ", le coup du joueur " << (is_white_courant ? "blanc" : "noir") << " est : " << *coupjoue << endl;
@@ -214,6 +213,7 @@ int main()
             cout << "Victoire du joueur ";
             cout << (is_white_courant ? "Blanc" : "Noir");
             cout << "!";
+            delete EchiTTT;
             return 0;
         }
         else
@@ -226,6 +226,7 @@ int main()
             {
                 cout << "Egalité !\n";
                 is_fini = true;
+                delete EchiTTT;
                 return 0;
             }
         }

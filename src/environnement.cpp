@@ -585,3 +585,11 @@ pair<int, int> operator-(pair<int, int> p1, pair<int, int> p2)
 {
     return pair<int, int>(p1.first - p2.first, p1.second - p2.second);
 }
+
+ostream &operator<<(ostream &out, const list<pair<int, float>> &list_temps)
+{
+    list<std::pair<int, float>>::const_iterator it;
+
+    for (it = list_temps.begin(); it != list_temps.end(); it++)
+        cout << "Coup" << it->first << " " << it->second << "ms\n";
+}
