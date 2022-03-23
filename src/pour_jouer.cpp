@@ -1,8 +1,7 @@
-#include <iostream>
+#include "pour_jouer.hpp"
 #include <cstdlib>
 #include <string>
 using namespace std;
-#include "pour_jouer.hpp"
 
 //////
 // LISTECOUPS
@@ -627,6 +626,19 @@ void resetPlateau(Echiquier &plateau, const Coup &coup_jouee)
         }
 
         plateau.L_coup_depuis_dep.pop_back();
+    }
+}
+
+void resetPlateau(Echiquier &plateau, const ListeCoups &coupsPrecedents)
+{
+    Coup *coup = coupsPrecedents.last;
+    int taillep = plateau.taille;
+    // Coup *premierCoup = coupsPrecedents.first;
+
+    for (int i = 1; i == coupsPrecedents.nbCoups; i++)
+    {
+        resetPlateau(plateau, *coup);
+        coup = coup->Prev;
     }
 }
 

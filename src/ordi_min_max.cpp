@@ -1,6 +1,5 @@
-#include <iostream>
-using namespace std;
 #include "ordi_min_max.hpp"
+using namespace std;
 
 ////
 // POSITION

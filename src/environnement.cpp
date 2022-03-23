@@ -1,10 +1,8 @@
+#include "environnement.hpp"
 
 #include <vector>
-#include <iostream>
-#include <random>
 #include <chrono>
 
-#include "environnement.hpp"
 using namespace std;
 
 /*
@@ -43,6 +41,10 @@ Deplac_rel::Deplac_rel(pair<int, int> coord)
 Deplac_rel::Deplac_rel(const Deplac_rel &dep_a_copier)
 {
     coor = dep_a_copier.coor;
+}
+
+Deplac_rel::~Deplac_rel()
+{
 }
 
 ostream &operator<<(ostream &out, const Deplac_rel &dep)
@@ -381,8 +383,7 @@ int coor_to_pos(pair<int, int> p, int taillep)
     return n;
 }
 
-pair<int, int>
-pos_to_coor(int n, int taillep)
+pair<int, int> pos_to_coor(int n, int taillep)
 {
     pair<int, int> p((n / taillep) + 1, (n % taillep) + 1);
     return p;
