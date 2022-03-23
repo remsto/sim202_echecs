@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <string>
 
+using namespace std;
+
 /*
 CLASSE ET FONCTIONS GENERIQUES AU TTT et ECHECS
 */
@@ -47,8 +49,7 @@ public:
     Piece(const Piece &piece_a_copier);
     ~Piece(){};
 };
-
-std::ostream &operator<<(std::ostream &out, const Piece &piece);
+ostream &operator<<(ostream &out, const Piece &piece);
 
 //////
 // COUP
@@ -100,10 +101,10 @@ public:
     void affiche() const;
 };
 
-int coor_to_pos(std::pair<int, int> p, int taillep);
-std::pair<int, int> pos_to_coor(int n, int taillep);
+int coor_to_pos(pair<int, int> p, int taillep);
+pair<int, int> pos_to_coor(int n, int taillep);
 
-std::ostream &operator<<(std::ostream &out, const std::pair<int, int> &pair);
+ostream &operator<<(ostream &out, const pair<int, int> &pair);
 
 bool is_coup_gagnant_TTT(const Echiquier &plateauRef, bool couleur, const pair<int, int> &coor);
 
