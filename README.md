@@ -5,6 +5,16 @@ Graphic interface made in QT for the chess game engine made in C++ by [axelle-db
 * Benefits from [axelle-db](https://github.com/axelle-db/sim202_echecs) chess engine, containing every chess rule, even the trickiest ones
 * Simple and easy interface made with QT and C++, allowing it to run without any stutter or lag on any computer
 
+## Compilation
+
+To use it, the simples way is to load the project with (QT Creator)[https://www.qt.io/download], and to build it from there. One can also use qmake from the command line, typing:
+
+``` 
+qmake Echec_Graphique.pro
+```
+
+To generate a makefile.
+
 ## Screenshots
 <p float="left">
   <img src="https://github.com/remsto/sim202_echecs/assets/66690700/dcc15384-51f5-4504-8e08-f56664c2e4bb" width="300" /> 
